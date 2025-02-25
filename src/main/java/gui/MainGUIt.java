@@ -21,7 +21,7 @@ import javax.swing.SwingConstants;
 import businessLogic.BLFacade;
 import domain.Traveler;
 
-public class MainGUIt {
+public class MainGUIt extends JFrame {
 	  private Traveler travel;
 		private static final long serialVersionUID = 1L;
 
@@ -48,8 +48,8 @@ public class MainGUIt {
 		public MainGUIt(Traveler t) {
 		super();
 		travel=t;
-		// this.setSize(271, 295);
-		//this.setSize(495, 290);
+		this.setSize(271, 295);
+		this.setSize(495, 290);
 		jLabelSelectOption = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.SelectOption"));
 		jLabelSelectOption.setBounds(0, 0, 450, 75);
 		jLabelSelectOption.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -61,7 +61,8 @@ public class MainGUIt {
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("en"));
 				System.out.println("Locale: "+Locale.getDefault());
-				paintAgain();				}
+				paintAgain();				
+			}
 		});
 		buttonGroup.add(rdbtnNewRadioButton);
 		
@@ -70,7 +71,8 @@ public class MainGUIt {
 			public void actionPerformed(ActionEvent arg0) {
 				Locale.setDefault(new Locale("eus"));
 				System.out.println("Locale: "+Locale.getDefault());
-				paintAgain();				}
+				paintAgain();				
+			}
 		});
 		buttonGroup.add(rdbtnNewRadioButton_1);
 		
@@ -92,10 +94,10 @@ public class MainGUIt {
 		
 		jButtonCreateQuery = new JButton();
 		jButtonCreateQuery.setBounds(0, 75, 450, 75);
-		jButtonCreateQuery.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.BookRide"));
-		jButtonCreateQuery.addActionListener(new java.awt.event.ActionListener() {
+		jButtonCreateQuery.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.BookRide"));
+		jButtonCreateQuery.addActionListener(new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				JFrame a = new BookRideGUI();
+				BookRideGUI a = new BookRideGUI();
 				a.setVisible(true);
 			}
 		});
@@ -103,11 +105,10 @@ public class MainGUIt {
 		jButtonQueryQueries = new JButton();
 		jButtonQueryQueries.setBounds(0, 150, 450, 75);
 		jButtonQueryQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.QueryRides"));
-		jButtonQueryQueries.addActionListener(new java.awt.event.ActionListener() {
+		jButtonQueryQueries.addActionListener(new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				JFrame a = new FindRidesGUI();
-
-				a.setVisible(true);
+				FindRidesGUI b = new FindRidesGUI();
+				b.setVisible(true);
 			}
 		});
 		
@@ -117,8 +118,8 @@ public class MainGUIt {
 		jContentPane.add(jButtonCreateQuery);
 		jContentPane.add(jButtonQueryQueries);
 		jContentPane.add(panel);	
-		//setContentPane(jContentPane);
-		//setTitle(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.MainTitle") + " - driver :"+travel.getName());
+		setContentPane(jContentPane);
+		setTitle(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.MainTitle") + " - travel :"+travel.getName());
 		
 		
 	}
@@ -126,7 +127,7 @@ public class MainGUIt {
 	private void paintAgain() {
 		jLabelSelectOption.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.SelectOption"));
 		jButtonQueryQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.QueryRides"));
-		jButtonCreateQuery.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.CreateRide"));
+		jButtonCreateQuery.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.BookRide"));
 		//this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.MainTitle")+ " - driver :"+travel.getName());
 	}
 }

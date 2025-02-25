@@ -8,11 +8,14 @@ import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -31,6 +34,9 @@ import domain.Driver;
 import domain.Ride;
 import exceptions.RideAlreadyExistException;
 import exceptions.RideMustBeLaterThanTodayException;
+import javax.swing.JComboBox;
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
 
 public class BookRideGUI extends JFrame {
 
@@ -38,8 +44,7 @@ public class BookRideGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private Driver driver;
-	private JTextField fieldOrigin = new JTextField();
-	private JTextField fieldDestination = new JTextField();
+	private JTextField dCities = new JTextField();
 
 	private JLabel jLabelOrigin = new JLabel(
 			ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.LeavingFrom"));
@@ -56,7 +61,7 @@ public class BookRideGUI extends JFrame {
 	private JCalendar jCalendar = new JCalendar();
 	private Calendar calendarAct = null;
 	private Calendar calendarAnt = null;
-
+	private List<String> cities;
 	private JScrollPane scrollPaneEvents = new JScrollPane();
 
 	private JButton jButtonCreate = new JButton(
@@ -94,10 +99,10 @@ public class BookRideGUI extends JFrame {
 
 		jLabelOrigin.setBounds(new Rectangle(6, 56, 92, 20));
 		jLabelSeats.setBounds(new Rectangle(6, 119, 173, 20));
-		jTextFieldSeats.setBounds(new Rectangle(139, 119, 60, 20));
+		jTextFieldSeats.setBounds(new Rectangle(100, 119, 131, 20));
 
 		jLabelPrice.setBounds(new Rectangle(6, 159, 173, 20));
-		jTextFieldPrice.setBounds(new Rectangle(139, 159, 60, 20));
+		jTextFieldPrice.setBounds(new Rectangle(100, 159, 130, 20));
 
 		jCalendar.setBounds(new Rectangle(300, 50, 225, 150));
 		scrollPaneEvents.setBounds(new Rectangle(25, 44, 346, 116));
@@ -146,14 +151,24 @@ public class BookRideGUI extends JFrame {
 
 		jLabelDestination.setBounds(6, 81, 61, 16);
 		getContentPane().add(jLabelDestination);
+		dCities.addContainerListener(new ContainerAdapter() {
+			@Override
+			public void componentAdded(ContainerEvent e) {
+				if(e.getco) {
+					
+				}
+			}
+		});
 
-		fieldOrigin.setBounds(100, 53, 130, 26);
-		getContentPane().add(fieldOrigin);
-		fieldOrigin.setColumns(10);
-
-		fieldDestination.setBounds(104, 81, 123, 26);
-		getContentPane().add(fieldDestination);
-		fieldDestination.setColumns(10);
+		dCities.setBounds(100, 53, 130, 26);
+		getContentPane().add(dCities);
+		dCities.setColumns(10);
+		
+		JComboBox aCities = new JComboBox();
+		aCities.setBounds(100, 87, 130, 22);
+		getContentPane().add(aCities);
+		
+		
 		// Code for JCalendar
 		this.jCalendar.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent propertychangeevent) {
@@ -205,7 +220,7 @@ public class BookRideGUI extends JFrame {
 				int inputSeats = Integer.parseInt(jTextFieldSeats.getText());
 				float price = Float.parseFloat(jTextFieldPrice.getText());
 
-				Ride r = facade.createRide(fieldOrigin.getText(), fieldDestination.getText(),
+				Ride r = facade.createRide(dCities.getText(), fieldDestination.getText(),
 						UtilDate.trim(jCalendar.getDate()), inputSeats, price, driver.getEmail());
 				jLabelMsg.setText(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.RideCreated"));
 
@@ -225,7 +240,7 @@ public class BookRideGUI extends JFrame {
 	private String field_Errors() {
 
 		try {
-			if ((fieldOrigin.getText().length() == 0) || (fieldDestination.getText().length() == 0)
+			if ((dCities.getText().length() == 0) || (fieldDestination.getText().length() == 0)
 					|| (jTextFieldSeats.getText().length() == 0) || (jTextFieldPrice.getText().length() == 0))
 				return ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.ErrorQuery");
 			else {
@@ -255,5 +270,4 @@ public class BookRideGUI extends JFrame {
 
 		}
 	}
-
 }

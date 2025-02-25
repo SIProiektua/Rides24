@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.awt.event.*;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -9,8 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import dataAccess.*;
+import domain.*;
 
 public class LoginGUI extends JFrame {
 
@@ -53,9 +54,19 @@ public class LoginGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				//SORTU BEHAR DA DATU BASEAN ERABILTZAILEA BILATZEKO ETA GERO INFORMAZIOA SAIOA HASTEKO
 				try {
-					
+					if(ApplicationLauncher.da.getPass(UserL.getText(),passwordField.getText())==true) {
+						if(ApplicationLauncher.da.getUserType(UserL.getName())=="Traveler") {
+							MainGUIt a = new MainGUIt((Traveler)ApplicationLauncher.da.getUser2(UserL.getName()));
+							a.setVisible(true);
+						}else if(ApplicationLauncher.da.getUserType(UserL.getName())=="Driver") {
+							MainGUI b = new MainGUI((Driver)ApplicationLauncher.da.getUser2(UserL.getName()));
+							b.setVisible(true);
+						}else {
+							throw new Exception();
+						}
+					}
 				}catch (Exception exc) {
-					
+					exc.getMessage();
 				}
 			}
 		});

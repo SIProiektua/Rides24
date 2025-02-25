@@ -1,19 +1,19 @@
 package domain;
 
-//import java.io.Serializable;
+// import java.io.Serializable;
 import java.util.Date;
 // import java.util.List;
 // import java.util.Vector;
 
-// import javax.persistence.*;
-// import javax.xml.bind.annotation.XmlAccessType;
-// import javax.xml.bind.annotation.XmlAccessorType;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 // import javax.xml.bind.annotation.XmlID;
 // import javax.xml.bind.annotation.XmlIDREF;
 // import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-// @XmlAccessorType(XmlAccessType.FIELD)
-// @Entity
+@XmlAccessorType(XmlAccessType.FIELD)
+@Entity
 public class Driver extends User{
 	private static final long serialVersionUID = 1L;
 	
@@ -34,6 +34,9 @@ public class Driver extends User{
 	public Driver(String email, String name) {
 		super(email, name);
 	}
+	public Driver() {
+        // Constructor vacío
+    }
 	public String toString(){
 		return email+";"+name+rides;
 	}
@@ -71,7 +74,7 @@ public class Driver extends User{
 	public void RemoveTraveler(Ride ride, Traveler traveler){
 		try{
 			Ride bidaia = rides.get(rides.indexOf(ride));
-			//bidaia.remove(bidaia.get(traveler));
+			bidaia.removeTraveler(traveler);
 		}catch(Exception e){
 			System.out.println("ERROR DRIVER.JAVA");
 		}

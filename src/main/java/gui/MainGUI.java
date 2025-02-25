@@ -78,7 +78,7 @@ public class MainGUI extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Locale.setDefault(new Locale("eus"));
 				System.out.println("Locale: "+Locale.getDefault());
-				paintAgain();				}
+				paintAgain();}
 		});
 		buttonGroup.add(rdbtnNewRadioButton_1);
 		

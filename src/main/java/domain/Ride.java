@@ -1,6 +1,5 @@
 package domain;
 
-import domain.*;
 
 import java.io.*;
 import java.util.Date;
@@ -189,9 +188,10 @@ public class Ride implements Serializable {
 	public String toString(){
 		return rideNumber+";"+";"+from+";"+to+";"+date;  
 	}
-
-
-
-
-	
+	public void addTraveler(Traveler traveler){
+		if(nPlaces<=travelerLista.size()) travelerLista.add(traveler);
+	}
+	public void removeTraveler(Traveler traveler){
+		travelerLista.remove(traveler);
+	}
 }

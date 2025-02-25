@@ -44,7 +44,7 @@ public class BLFacadeImplementation  implements BLFacade {
 		
     
 	@WebMethod public boolean Login(String u, String p){
-		if(dbManager.getUser(u/*, p*/)){
+		if(dbManager.getPass(u, p)){
 			return true;
 		} else{
 			return false;

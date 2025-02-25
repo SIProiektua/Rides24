@@ -73,12 +73,12 @@ public class DataAccess  {
 		db.getTransaction().begin();
 
 		try {
-
+			
 		   Calendar today = Calendar.getInstance();
 		   
 		   int month=today.get(Calendar.MONTH);
 		   int year=today.get(Calendar.YEAR);
-		   if (month==12) { month=1; year+=1;}  
+		   if (month==12) { month=1; year+=1;}
 	    
 		   
 		    //Create drivers  /!\ se debe cambiar
@@ -102,10 +102,9 @@ public class DataAccess  {
 
 			
 						
-			db.persist(driver1);
-			db.persist(driver2);
-			db.persist(driver3);
-
+			db.merge(driver1);
+			db.merge(driver2);
+			db.merge(driver3);
 	
 			db.getTransaction().commit();
 			System.out.println("Db initialized");
@@ -128,8 +127,14 @@ public class DataAccess  {
 			Driver d1 = new Driver(email, ID,name,username,pass);
 			u1 = (User) d1;
 		}
-		db.persist(u1);
+		db.merge(u1);
 		db.getTransaction().commit();
+	}
+	
+	public String getUserType(String u) {
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.user FROM Users r WHERE r.user =?1", User.class);
+		List<User> user = query.getResultList();
+		return user.getClass().getSimpleName();
 	}
 
 	public boolean getUser(String u) {
@@ -141,10 +146,20 @@ public class DataAccess  {
 		}
 		return false;
 	}
+	public User getUser2(String u) {
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.user FROM Users r WHERE r.user =?1", User.class);
+		query.setParameter(1, u);
+		List<User> results = query.getResultList();
+		if(!results.isEmpty()) {
+			return results.get(0);
+		}
+		return null;
+	}
 	
-	public boolean getPass(String pass) {
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.password FROM Users r WHERE r.password =?1", User.class);
+	public boolean getPass(String user,String pass) {
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.password FROM Users r WHERE r.password =?1 and r.user=?2", User.class);
 		query.setParameter(1, pass);
+		query.setParameter(2, user);
 		List<User> results = query.getResultList();
 		if(!results.isEmpty()) {
 			return true;
@@ -203,7 +218,7 @@ public class DataAccess  {
 			}
 			Ride ride = driver.addRide(from, to, date, nPlaces, price);
 			//next instruction can be obviated
-			db.persist(driver); 
+			db.merge(driver); 
 			db.getTransaction().commit();
 
 			return ride;
@@ -237,6 +252,30 @@ public class DataAccess  {
 		   res.add(ride);
 		  }
 	 	return res;
+	}
+	
+	public void updateRides(Traveler t, Ride r) {
+		String s1 = r.getFrom();
+		String s2= r.getTo();
+		Date s3 = r.getDate();
+		int j=-1;
+		List<Ride> oldRide = getRides(s1, s2, s3);
+		System.out.println("There are "+oldRide.size()+" rides");
+		for(int i = 0; i<oldRide.size();i++) {
+			if(oldRide.get(i).getRideNumber().equals(r.getRideNumber())) {
+				j = i;
+				break;
+			}
+		}
+		if(j>-1) {
+			Ride oldR = oldRide.get(j);
+			oldR.addTraveler(t);
+			if(oldR.getnPlaces()>0) {
+				oldR.setBetMinimum((int)oldR.getnPlaces()-1);
+			}else {
+				System.out.println("ERROR NOT FOUND SEATS");
+			}
+		}
 	}
 	
 	/**

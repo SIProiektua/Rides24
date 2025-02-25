@@ -30,12 +30,11 @@ public class ApplicationLauncher {
 		System.out.println("Locale: "+Locale.getDefault());
 		
 	    Driver driver=new Driver("driver3@gmail.com","Test Driver");
-
-		//Traveler traveler = new Traveler("jonormae@hotmail.com", "Test Traveler", null);
-		
-		SelectGUI a = new SelectGUI();
+		Traveler traveler = new Traveler("jonormae@hotmail.com", "Test Traveller");
+		//SelectGUI a = new SelectGUI();
+		MainGUIt a = new MainGUIt(traveler);
 		a.setVisible(true);
-
+	
 
 		try {
 			
@@ -67,8 +66,6 @@ public class ApplicationLauncher {
 			} 
 			
 			MainGUI.setBussinessLogic(appFacadeInterface);
-
-		
 
 			
 		}catch (Exception e) {

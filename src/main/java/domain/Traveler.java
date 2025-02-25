@@ -28,7 +28,7 @@ public class Traveler extends User{
 	public Traveler(String email, String name) {
 		super(email, name);
 	}
-
+	
 
 	public String toString(){
 		return email+";"+name+rides;
@@ -46,5 +46,8 @@ public class Traveler extends User{
 		if (email != other.email)
 			return false;
 		return true;
+	}
+	public void addToRide(){
+		//rides.add(this)
 	}
 }

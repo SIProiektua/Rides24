@@ -27,23 +27,26 @@ public class User implements Serializable {
     protected String ID;
 	protected String username;
 	protected String password;
+	protected String usertype;
 	@XmlIDREF
     
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	protected List<Ride> rides=new Vector<Ride>();
 
 
-            ////////////////
-            //Constructors//
-            ////////////////
+            //////////////////
+            ///Constructors///
+            //////////////////
 
 	public User() {
 		super();
+		usertype = this.getClass().toString();
 	}
 	public User(String email, String name) {
         super();
 		this.email = email;
 		this.name = name;
+		usertype = this.getClass().toString();
 	}
 	public User(String email, String name, String ID, String username, String password) {
         super();
@@ -52,6 +55,7 @@ public class User implements Serializable {
         this.ID = ID;
         this.username=username;
 		this.password=password;
+		usertype = this.getClass().toString();
 	}
 	
 
