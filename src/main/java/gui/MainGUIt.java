@@ -22,7 +22,8 @@ import businessLogic.BLFacade;
 import domain.Traveler;
 
 public class MainGUIt extends JFrame {
-	  private Traveler travel;
+	 
+	private Traveler travel;
 		private static final long serialVersionUID = 1L;
 
 		private JPanel jContentPane = null;
@@ -46,7 +47,14 @@ public class MainGUIt extends JFrame {
 		private final ButtonGroup buttonGroup = new ButtonGroup();
 		
 		public MainGUIt(Traveler t) {
-		super();
+			super();
+			addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent e) {
+					ApplicationLauncher.da.close();
+				}
+				
+			});
 		travel=t;
 		this.setSize(271, 295);
 		this.setSize(495, 290);
@@ -97,7 +105,7 @@ public class MainGUIt extends JFrame {
 		jButtonCreateQuery.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.BookRide"));
 		jButtonCreateQuery.addActionListener(new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				BookRideGUI a = new BookRideGUI();
+				BookRideGUI a = new BookRideGUI(t);
 				a.setVisible(true);
 			}
 		});

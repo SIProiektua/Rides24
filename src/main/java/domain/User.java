@@ -28,6 +28,73 @@ public class User implements Serializable {
 	protected String username;
 	protected String password;
 	protected String usertype;
+	/**
+	 * @return the iD
+	 */
+	public String getID() {
+		return ID;
+	}
+	/**
+	 * @param iD the iD to set
+	 */
+	public void setID(String iD) {
+		ID = iD;
+	}
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+	/**
+	 * @param username the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	/**
+	 * @return the usertype
+	 */
+	public String getUsertype() {
+		return usertype;
+	}
+	/**
+	 * @param usertype the usertype to set
+	 */
+	public void setUsertype(String usertype) {
+		this.usertype = usertype;
+	}
+	/**
+	 * @return the rides
+	 */
+	public List<Ride> getRides() {
+		return rides;
+	}
+	/**
+	 * @param rides the rides to set
+	 */
+	public void setRides(List<Ride> rides) {
+		this.rides = rides;
+	}
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	@XmlIDREF
     
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
@@ -74,7 +141,6 @@ public class User implements Serializable {
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}

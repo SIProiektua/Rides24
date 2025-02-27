@@ -132,13 +132,20 @@ public class DataAccess  {
 	}
 	
 	public String getUserType(String u) {
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.user FROM Users r WHERE r.user =?1", User.class);
+		//TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.username FROM User r WHERE r.username = :?", User.class);
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.username = :username", User.class);
+		query.setParameter("username", u.trim());
 		List<User> user = query.getResultList();
-		return user.getClass().getSimpleName();
+		if(user.isEmpty()) {
+			System.out.println("FATAL ERROR");
+		}
+		System.out.println(u);
+		System.out.println(user.get(0).getClass().getSimpleName());
+		return user.get(0).getClass().getSimpleName();
 	}
 
 	public boolean getUser(String u) {
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.user FROM Users r WHERE r.user =?1", User.class);
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.username FROM User r WHERE r.username =?1", User.class);
 		query.setParameter(1, u);
 		List<User> results = query.getResultList();
 		if(!results.isEmpty()) {
@@ -147,7 +154,7 @@ public class DataAccess  {
 		return false;
 	}
 	public User getUser2(String u) {
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.user FROM Users r WHERE r.user =?1", User.class);
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.username FROM User r WHERE r.username =?1", User.class);
 		query.setParameter(1, u);
 		List<User> results = query.getResultList();
 		if(!results.isEmpty()) {
@@ -157,7 +164,7 @@ public class DataAccess  {
 	}
 	
 	public boolean getPass(String user,String pass) {
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.password FROM Users r WHERE r.password =?1 and r.user=?2", User.class);
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r.password FROM User r WHERE r.password =?1 and r.username=?2", User.class);
 		query.setParameter(1, pass);
 		query.setParameter(2, user);
 		List<User> results = query.getResultList();
@@ -294,8 +301,18 @@ public class DataAccess  {
 		if(getUserType(driver).equals("Driver")) {
 			User n = getUser2(driver);
 			String s = n.getEmail();
-			
+			List<Ride> res = new ArrayList<>();	
+			Boolean b = false;
+			res = getRides(from , to ,date);
+			for(Ride r: res) {
+				System.out.println(((r.getDriver().equals(driver)&&r.getnPlaces()==nPlaces)&&r.getPrice()==price)&&b==false);
+				if(((r.getDriver().equals(driver)&&r.getnPlaces()==nPlaces)&&r.getPrice()==price)&&b==false) {
+					b = true;
+					return r;
+				}
+			}
 		}
+		return new Ride();
 	}
 	
 	/**

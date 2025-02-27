@@ -1,10 +1,8 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,261 +11,339 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 import com.toedter.calendar.JCalendar;
+
 import businessLogic.BLFacade;
 import configuration.UtilDate;
-import domain.Driver;
 import domain.Ride;
-import exceptions.RideAlreadyExistException;
-import exceptions.RideMustBeLaterThanTodayException;
-import javax.swing.JComboBox;
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
+import domain.Traveler;
+
 
 public class BookRideGUI extends JFrame {
-
-	private JPanel contentPane;
 	private static final long serialVersionUID = 1L;
 
-	private Driver driver;
-	private JTextField dCities = new JTextField();
 
-	private JLabel jLabelOrigin = new JLabel(
-			ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.LeavingFrom"));
-	private JLabel jLabelDestination = new JLabel(
-			ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.GoingTo"));
-	private JLabel jLabelSeats = new JLabel(
-			ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.NumberOfSeats"));
-	private JLabel jLabRideDate = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.RideDate"));
-	private JLabel jLabelPrice = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.Price"));
+	private JComboBox<String> jComboBoxOrigin = new JComboBox<String>();
+	DefaultComboBoxModel<String> originLocations = new DefaultComboBoxModel<String>();
+	private JButton jButtonClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+	private JComboBox<String> jComboBoxDestination = new JComboBox<String>();
+	DefaultComboBoxModel<String> destinationCities = new DefaultComboBoxModel<String>();
 
-	private JTextField jTextFieldSeats = new JTextField();
-	private JTextField jTextFieldPrice = new JTextField();
+	private JLabel jLabelOrigin = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.LeavingFrom"));
+	private JLabel jLabelDestination = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.GoingTo"));
+	private final JLabel jLabelEventDate = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.RideDate"));
+	private final JLabel jLabelEvents = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.Rides")); 
 
-	private JCalendar jCalendar = new JCalendar();
-	private Calendar calendarAct = null;
+	private JButton jPayTravel = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+
+	// Code for JCalendar
+	private JCalendar jCalendar1 = new JCalendar();
 	private Calendar calendarAnt = null;
-	private List<String> cities;
+	private Calendar calendarAct = null;
 	private JScrollPane scrollPaneEvents = new JScrollPane();
 
-	private JButton jButtonCreate = new JButton(
-			ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.CreateRide"));
-	private JButton jButtonClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
-	private JLabel jLabelMsg = new JLabel();
-	private JLabel jLabelError = new JLabel();
+	private List<Date> datesWithRidesCurrentMonth = new Vector<Date>();
 
-	private List<Date> datesWithEventsCurrentMonth;
+	private JTable tableRides= new JTable();
+	private final JButton jClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+	private DefaultTableModel tableModelRides;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					BookRideGUI frame = new BookRideGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	/**
-	 * Create the frame.
-	 */
-	public BookRideGUI() {
-		this.driver = driver;
+	private String[] columnNamesRides = new String[] {
+			ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Driver"), 
+			ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.NPlaces"), 
+			ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Price")
+	};
+	
+
+
+	public BookRideGUI(Traveler t)
+	{
+
 		this.getContentPane().setLayout(null);
-		this.setSize(new Dimension(604, 370));
-		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.CreateRide"));
+		this.setSize(new Dimension(700, 500));
+		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.FindRides"));
 
-		jLabelOrigin.setBounds(new Rectangle(6, 56, 92, 20));
-		jLabelSeats.setBounds(new Rectangle(6, 119, 173, 20));
-		jTextFieldSeats.setBounds(new Rectangle(100, 119, 131, 20));
+		jLabelEventDate.setBounds(new Rectangle(457, 6, 140, 25));
+		jLabelEvents.setBounds(172, 229, 259, 16);
 
-		jLabelPrice.setBounds(new Rectangle(6, 159, 173, 20));
-		jTextFieldPrice.setBounds(new Rectangle(100, 159, 130, 20));
+		this.getContentPane().add(jLabelEventDate, null);
+		this.getContentPane().add(jLabelEvents);
 
-		jCalendar.setBounds(new Rectangle(300, 50, 225, 150));
-		scrollPaneEvents.setBounds(new Rectangle(25, 44, 346, 116));
+		jPayTravel.setBounds(new Rectangle(137, 420, 130, 30));
 
-		jButtonCreate.setBounds(new Rectangle(100, 263, 130, 30));
-
-		jButtonCreate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				jButtonCreate_actionPerformed(e);
-			}
-		});
-		jButtonClose.setBounds(new Rectangle(275, 263, 130, 30));
-		jButtonClose.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				jButtonClose_actionPerformed(e);
-			}
-		});
-
-		jLabelMsg.setBounds(new Rectangle(275, 214, 305, 20));
-		jLabelMsg.setForeground(Color.red);
-
-		jLabelError.setBounds(new Rectangle(6, 191, 320, 20));
-		jLabelError.setForeground(Color.red);
-
-		this.getContentPane().add(jLabelMsg, null);
-		this.getContentPane().add(jLabelError, null);
-
-		this.getContentPane().add(jButtonClose, null);
-		this.getContentPane().add(jButtonCreate, null);
-		this.getContentPane().add(jTextFieldSeats, null);
-
-		this.getContentPane().add(jLabelSeats, null);
-		this.getContentPane().add(jLabelOrigin, null);
-
-		this.getContentPane().add(jCalendar, null);
-
-		this.getContentPane().add(jLabelPrice, null);
-		this.getContentPane().add(jTextFieldPrice, null);
-
-		BLFacade facade = MainGUI.getBusinessLogic();
-		datesWithEventsCurrentMonth = facade.getThisMonthDatesWithRides("a", "b", jCalendar.getDate());
-
-		jLabRideDate.setBounds(new Rectangle(40, 15, 140, 25));
-		jLabRideDate.setBounds(298, 16, 140, 25);
-		getContentPane().add(jLabRideDate);
-
-		jLabelDestination.setBounds(6, 81, 61, 16);
-		getContentPane().add(jLabelDestination);
-		dCities.addContainerListener(new ContainerAdapter() {
-			@Override
-			public void componentAdded(ContainerEvent e) {
-				if(e.getco) {
+		jPayTravel.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				String salida = jComboBoxOrigin.getSelectedItem().toString();
+				String llegada = jComboBoxDestination.getSelectedItem().toString();
+				Date data = jCalendar1.getDate();
+				int i = tableRides.getSelectedRow();
+				int j = tableRides.getSelectedColumn();
+				System.out.println(tableRides.getValueAt(i,j)); //Aitor fernandez.
+				Ride r = null;
+				//	System.out.println(tableRides.getValueAt(1,i).toString() + salida + llegada + data + Math.toIntExact(Integer.parseInt(tableRides.getValueAt(2,i).toString())) + Float.parseFloat(tableRides.getValueAt(3,i).toString()));
+				//	r = ApplicationLauncher.da.findRides(tableRides.getValueAt(i,1).toString(), salida, llegada, data, Math.toIntExact(Integer.parseInt(tableRides.getValueAt(i,2).toString())), Float.parseFloat(tableRides.getValueAt(i,3).toString()));
 					
+				//////!\\\\\\Prueba
+				// Obtener la fila específica (ejemplo: fila 1)
+        		int fila = 1; // Cambia el índice según la fila deseada
+        		ArrayList<String> filaTexto = new ArrayList<String>();
+        		if (fila >= 0 && fila < tableRides.getRowCount()) {	
+            		for (int columna = 0; columna < tableRides.getColumnCount(); columna++) {
+                		filaTexto.add(tableRides.getValueAt(fila, columna).toString());
+            		}
+            		// Imprimir la fila
+            		System.out.println("Fila " + fila + ": " + filaTexto.toString());
+        		} else {
+            		System.out.println("Índice de fila fuera de rango.");
+        		}
+				//////////!\Prueba
+        		r = ApplicationLauncher.da.findRides(filaTexto.get(0), salida, llegada, data,(int) Float.parseFloat(filaTexto.get(1)), Float.parseFloat(filaTexto.get(2)));
+				if(r != null) {
+					PaymentGUI d = new PaymentGUI(t, r);
+					d.setVisible(true);
+				}else {
+					System.out.println("ERROR HAS HAPPENED");
 				}
+				jButton2_actionPerformed(e);
+				
+			}
+		});
+		BLFacade facade = MainGUI.getBusinessLogic();
+		List<String> origins=facade.getDepartCities();
+		
+		for(String location:origins) originLocations.addElement(location);
+		
+		jLabelOrigin.setBounds(new Rectangle(6, 56, 92, 20));
+		jLabelDestination.setBounds(6, 81, 61, 16);
+		getContentPane().add(jLabelOrigin);
+
+		getContentPane().add(jLabelDestination);
+
+		jComboBoxOrigin.setModel(originLocations);
+		jComboBoxOrigin.setBounds(new Rectangle(103, 50, 172, 20));
+		
+
+		List<String> aCities=facade.getDestinationCities((String)jComboBoxOrigin.getSelectedItem());
+		for(String aciti:aCities) {
+			destinationCities.addElement(aciti);
+		}
+		
+		jComboBoxOrigin.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				destinationCities.removeAllElements();
+				BLFacade facade = MainGUI.getBusinessLogic();
+
+				List<String> aCities=facade.getDestinationCities((String)jComboBoxOrigin.getSelectedItem());
+				for(String aciti:aCities) {
+					destinationCities.addElement(aciti);
+				}
+				tableModelRides.getDataVector().removeAllElements();
+				tableModelRides.fireTableDataChanged();
+
+				
 			}
 		});
 
-		dCities.setBounds(100, 53, 130, 26);
-		getContentPane().add(dCities);
-		dCities.setColumns(10);
-		
-		JComboBox aCities = new JComboBox();
-		aCities.setBounds(100, 87, 130, 22);
-		getContentPane().add(aCities);
-		
-		
+
+		jComboBoxDestination.setModel(destinationCities);
+		jComboBoxDestination.setBounds(new Rectangle(103, 80, 172, 20));
+		jComboBoxDestination.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+
+				paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,	new Color(210,228,238));
+
+				BLFacade facade = MainGUI.getBusinessLogic();
+
+				datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
+				paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
+
+			}
+		});
+
+		this.getContentPane().add(jPayTravel, null);
+		this.getContentPane().add(jComboBoxOrigin, null);
+
+		this.getContentPane().add(jComboBoxDestination, null);
+
+
+		jCalendar1.setBounds(new Rectangle(300, 50, 225, 150));
+
+
 		// Code for JCalendar
-		this.jCalendar.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent propertychangeevent) {
-//			
-				if (propertychangeevent.getPropertyName().equals("locale")) {
-					jCalendar.setLocale((Locale) propertychangeevent.getNewValue());
-				} else if (propertychangeevent.getPropertyName().equals("calendar")) {
+		jCalendar1.addPropertyChangeListener(new PropertyChangeListener()
+		{
+			public void propertyChange(PropertyChangeEvent propertychangeevent)
+			{
+
+				if (propertychangeevent.getPropertyName().equals("locale"))
+				{
+					jCalendar1.setLocale((Locale) propertychangeevent.getNewValue());
+				}
+				else if (propertychangeevent.getPropertyName().equals("calendar"))
+				{
 					calendarAnt = (Calendar) propertychangeevent.getOldValue();
 					calendarAct = (Calendar) propertychangeevent.getNewValue();
-					DateFormat dateformat1 = DateFormat.getDateInstance(1, jCalendar.getLocale());
+					
+
+					
+					DateFormat dateformat1 = DateFormat.getDateInstance(1, jCalendar1.getLocale());
 
 					int monthAnt = calendarAnt.get(Calendar.MONTH);
 					int monthAct = calendarAct.get(Calendar.MONTH);
-					if (monthAct != monthAnt) {
-						if (monthAct == monthAnt + 2) {
-							// Si en JCalendar está 30 de enero y se avanza al mes siguiente, devolverá 2
-							// de marzo (se toma como equivalente a 30 de febrero)
-							// Con este código se dejará como 1 de febrero en el JCalendar
-							calendarAct.set(Calendar.MONTH, monthAnt + 1);
-							calendarAct.set(Calendar.DAY_OF_MONTH, 1);
-						}
 
-						jCalendar.setCalendar(calendarAct);
+					if (monthAct!=monthAnt) {
+						if (monthAct==monthAnt+2) {
+							// Si en JCalendar está 30 de enero y se avanza al mes siguiente, devolvería 2 de marzo (se toma como equivalente a 30 de febrero)
+							// Con este código se dejará como 1 de febrero en el JCalendar
+							calendarAct.set(Calendar.MONTH, monthAnt+1);
+							calendarAct.set(Calendar.DAY_OF_MONTH, 1);
+						}						
+
+						jCalendar1.setCalendar(calendarAct);
 
 					}
-					jCalendar.setCalendar(calendarAct);
-					int offset = jCalendar.getCalendar().get(Calendar.DAY_OF_WEEK);
+					
+					try {
+						tableModelRides.setDataVector(null, columnNamesRides);
+						tableModelRides.setColumnCount(4); // another column added to allocate ride objects
 
-					if (Locale.getDefault().equals(new Locale("es")))
-						offset += 4;
-					else
-						offset += 5;
-					Component o = (Component) jCalendar.getDayChooser().getDayPanel()
-							.getComponent(jCalendar.getCalendar().get(Calendar.DAY_OF_MONTH) + offset);
+						BLFacade facade = MainGUI.getBusinessLogic();
+						List<domain.Ride> rides=facade.getRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),UtilDate.trim(jCalendar1.getDate()));
+
+						if (rides.isEmpty() ) jLabelEvents.setText(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.NoRides")+ ": "+dateformat1.format(calendarAct.getTime()));
+						else jLabelEvents.setText(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Rides")+ ": "+dateformat1.format(calendarAct.getTime()));
+						for (domain.Ride ride:rides){
+							Vector<Object> row = new Vector<Object>();
+							row.add(ride.getDriver().getName());
+							row.add(ride.getnPlaces());
+							row.add(ride.getPrice());
+							row.add(ride); // ev object added in order to obtain it with tableModelEvents.getValueAt(i,3)
+							tableModelRides.addRow(row);		
+						}
+						datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
+						paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
+
+
+					} catch (Exception e1) {
+
+						e1.printStackTrace();
+					}
+					tableRides.getColumnModel().getColumn(0).setPreferredWidth(170);
+					tableRides.getColumnModel().getColumn(1).setPreferredWidth(30);
+					tableRides.getColumnModel().getColumn(1).setPreferredWidth(30);
+					tableRides.getColumnModel().removeColumn(tableRides.getColumnModel().getColumn(3)); // not shown in JTable
+
 				}
-			}
+			} 
+			
 		});
 
-	}
-
-	private void jButtonCreate_actionPerformed(ActionEvent e) {
-		jLabelMsg.setText("");
-		String error = field_Errors();
-		if (error != null)
-			jLabelMsg.setText(error);
-		else
-			try {
-				BLFacade facade = MainGUI.getBusinessLogic();
-				int inputSeats = Integer.parseInt(jTextFieldSeats.getText());
-				float price = Float.parseFloat(jTextFieldPrice.getText());
-
-				Ride r = facade.createRide(dCities.getText(), fieldDestination.getText(),
-						UtilDate.trim(jCalendar.getDate()), inputSeats, price, driver.getEmail());
-				jLabelMsg.setText(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.RideCreated"));
-
-			} catch (RideMustBeLaterThanTodayException e1) {
-				// TODO Auto-generated catch block
-				jLabelMsg.setText(e1.getMessage());
-			} catch (RideAlreadyExistException e1) {
-				// TODO Auto-generated catch block
-				jLabelMsg.setText(e1.getMessage());
+		jButtonClose.setBounds(new Rectangle(148, 420, 130, 30));
+		jButtonClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
 			}
-	}
+		});
+		
+		this.getContentPane().add(jCalendar1, null);
 
-	private void jButtonClose_actionPerformed(ActionEvent e) {
+		scrollPaneEvents.setBounds(new Rectangle(172, 257, 346, 150));
+
+		scrollPaneEvents.setViewportView(tableRides);
+		tableModelRides = new DefaultTableModel(null, columnNamesRides);
+
+		tableRides.setModel(tableModelRides);
+
+		tableModelRides.setDataVector(null, columnNamesRides);
+		tableModelRides.setColumnCount(4); // another column added to allocate ride objects
+
+		tableRides.getColumnModel().getColumn(0).setPreferredWidth(170);
+		tableRides.getColumnModel().getColumn(1).setPreferredWidth(30);
+		tableRides.getColumnModel().getColumn(1).setPreferredWidth(30);
+
+		tableRides.getColumnModel().removeColumn(tableRides.getColumnModel().getColumn(3)); // not shown in JTable
+
+		this.getContentPane().add(scrollPaneEvents, null);
+		datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
+		paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
+		jClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainGUIt b = new MainGUIt(t);
+				b.setVisible(true);
+			}
+		});
+		jClose.setBounds(new Rectangle(137, 420, 130, 30));
+		jClose.setBounds(467, 424, 130, 30);
+		
+		getContentPane().add(jClose);
+
+	}
+	public static void paintDaysWithEvents(JCalendar jCalendar,List<Date> datesWithEventsCurrentMonth, Color color) {
+		//		// For each day with events in current month, the background color for that day is changed to cyan.
+
+
+		Calendar calendar = jCalendar.getCalendar();
+
+		int month = calendar.get(Calendar.MONTH);
+		int today=calendar.get(Calendar.DAY_OF_MONTH);
+		int year=calendar.get(Calendar.YEAR);
+
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		int offset = calendar.get(Calendar.DAY_OF_WEEK);
+
+		if (Locale.getDefault().equals(new Locale("es")))
+			offset += 4;
+		else
+			offset += 5;
+
+
+		for (Date d:datesWithEventsCurrentMonth){
+
+			calendar.setTime(d);
+
+
+			// Obtain the component of the day in the panel of the DayChooser of the
+			// JCalendar.
+			// The component is located after the decorator buttons of "Sun", "Mon",... or
+			// "Lun", "Mar"...,
+			// the empty days before day 1 of month, and all the days previous to each day.
+			// That number of components is calculated with "offset" and is different in
+			// English and Spanish
+			//			    		  Component o=(Component) jCalendar.getDayChooser().getDayPanel().getComponent(i+offset);; 
+			Component o = (Component) jCalendar.getDayChooser().getDayPanel()
+					.getComponent(calendar.get(Calendar.DAY_OF_MONTH) + offset);
+			o.setBackground(color);
+		}
+
+		calendar.set(Calendar.DAY_OF_MONTH, today);
+		calendar.set(Calendar.MONTH, month);
+		calendar.set(Calendar.YEAR, year);
+
+
+	}
+	
+	private void jButton2_actionPerformed(ActionEvent e) {
 		this.setVisible(false);
 	}
 
-	private String field_Errors() {
-
-		try {
-			if ((dCities.getText().length() == 0) || (fieldDestination.getText().length() == 0)
-					|| (jTextFieldSeats.getText().length() == 0) || (jTextFieldPrice.getText().length() == 0))
-				return ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.ErrorQuery");
-			else {
-
-				// trigger an exception if the introduced string is not a number
-				int inputSeats = Integer.parseInt(jTextFieldSeats.getText());
-
-				if (inputSeats <= 0) {
-					return ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.SeatsMustBeGreaterThan0");
-				} else {
-					float price = Float.parseFloat(jTextFieldPrice.getText());
-					if (price <= 0)
-						return ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.PriceMustBeGreaterThan0");
-
-					else
-						return null;
-
-				}
-			}
-		} catch (java.lang.NumberFormatException e1) {
-
-			return ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.ErrorNumber");
-		} catch (Exception e1) {
-
-			e1.printStackTrace();
-			return null;
-
-		}
-	}
 }

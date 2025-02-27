@@ -54,6 +54,13 @@ public class MainGUI extends JFrame {
 	 */
 	public MainGUI(Driver d) {
 		super();
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				ApplicationLauncher.da.close();
+			}
+			
+		});
 
 		driver=d;
 		

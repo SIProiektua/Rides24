@@ -20,6 +20,11 @@ public class ApplicationLauncher {
 	
 	
 	public static void main(String[] args) {
+		// try{
+		// 		Runtime.getRuntime().exec("Start Chrome");
+		// } catch(Exception e){
+		// 	    e.printStackTrace();
+		// }
 
 		ConfigXML c=ConfigXML.getInstance();
 	
@@ -34,6 +39,7 @@ public class ApplicationLauncher {
 		//SelectGUI a = new SelectGUI();
 		MainGUIt a = new MainGUIt(traveler);
 		a.setVisible(true);
+		
 	
 
 		try {

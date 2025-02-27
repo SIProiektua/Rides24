@@ -53,7 +53,13 @@ public class CreateRideGUI extends JFrame {
 
 
 	public CreateRideGUI(Driver driver) {
-
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				ApplicationLauncher.da.close();
+			}
+			
+		});
 		this.driver=driver;
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(604, 370));
