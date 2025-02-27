@@ -54,7 +54,7 @@ public class DataAccess  {
 		
 		System.out.println("DataAccess created => isDatabaseLocal: "+c.isDatabaseLocal()+" isDatabaseInitialized: "+c.isDatabaseInitialized());
 
-		close();
+		// close();
 
 	}
      
@@ -206,6 +206,8 @@ public class DataAccess  {
 	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail) throws  RideAlreadyExistException, RideMustBeLaterThanTodayException {
 		System.out.println(">> DataAccess: createRide=> from= "+from+" to= "+to+" driver="+driverEmail+" date "+date);
 		try {
+			//!\Puede que esta linea (↓) deba ser borrada
+			if(getRides(from, to, date).size()>0)return null;
 			if(new Date().compareTo(date)>0) {
 				throw new RideMustBeLaterThanTodayException(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.ErrorRideMustBeLaterThanToday"));
 			}
@@ -217,6 +219,7 @@ public class DataAccess  {
 				throw new RideAlreadyExistException(ResourceBundle.getBundle("Etiquetas").getString("DataAccess.RideAlreadyExist"));
 			}
 			Ride ride = driver.addRide(from, to, date, nPlaces, price);
+			
 			//next instruction can be obviated
 			db.merge(driver); 
 			db.getTransaction().commit();
@@ -275,6 +278,23 @@ public class DataAccess  {
 			}else {
 				System.out.println("ERROR NOT FOUND SEATS");
 			}
+		}
+	}
+	
+	public void bookRides(Traveler t, Ride r) throws Exception {
+		if(r.getnPlaces()>1.00) {
+			updateRides(t,r);
+			System.out.print(t.getName()+"You have booked "+ r.getDriver() + " 's travel from"+ r.getFrom()+ " to " + r.getTo());
+		}else {
+			throw new Exception();
+		}
+	}
+	
+	public Ride findRides(String driver, String from, String to, Date date, int nPlaces, float price) {
+		if(getUserType(driver).equals("Driver")) {
+			User n = getUser2(driver);
+			String s = n.getEmail();
+			
 		}
 	}
 	
