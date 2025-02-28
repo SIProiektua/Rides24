@@ -94,6 +94,14 @@ public class Driver extends User{
 			return false;
 		return true;
 	}
+	public int compareTo(Driver drive) {
+		int i = 0;
+		if(drive.getName().equals(this.getName())&&drive.getEmail().equals(this.getEmail())&&(drive.getPassword().equals(this.getPassword()))&&drive.getUsername().equals(this.getUsername())&&this.getUsertype().equals(drive.getUsertype())) {
+			i = 1;
+		}
+		return i;
+	}
+	
 
 
 }
