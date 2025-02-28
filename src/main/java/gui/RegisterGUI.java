@@ -112,7 +112,7 @@ public class RegisterGUI extends JFrame {
 		JRegisterB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(email.getText().equals(Name.getText()) && NA.getText().equals(userName.getText()) && passwordField.getText().equals(NA.getText())) {
-					//throw new EmptyImputException();
+					System.out.print("User Already Exists on the App");
 				}else {
 					if(state==true) {
 						b = new MainGUIt(new Traveler(email.getText(),Name.getText(),NA.getText(),userName.getText(), passwordField.getText()));

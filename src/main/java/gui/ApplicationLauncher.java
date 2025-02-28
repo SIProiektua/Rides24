@@ -35,6 +35,7 @@ public class ApplicationLauncher {
 		System.out.println("Locale: "+Locale.getDefault());
 		
 	    Driver driver=new Driver("driver3@gmail.com","Test Driver");
+	    
 		Traveler traveler = new Traveler("jonormae@hotmail.com", "Test Traveller");
 		//SelectGUI a = new SelectGUI();
 		MainGUIt a = new MainGUIt(traveler);

@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -51,7 +52,7 @@ public class BookRideGUI extends JFrame {
 	private final JLabel jLabelEventDate = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.RideDate"));
 	private final JLabel jLabelEvents = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.Rides")); 
 
-	private JButton jPayTravel = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+	private JButton jPayTravel = new JButton(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Payment"));
 
 	// Code for JCalendar
 	private JCalendar jCalendar1 = new JCalendar();
@@ -76,7 +77,7 @@ public class BookRideGUI extends JFrame {
 
 	public BookRideGUI(Traveler t)
 	{
-
+		
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(700, 500));
 		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.FindRides"));
@@ -96,28 +97,20 @@ public class BookRideGUI extends JFrame {
 				String salida = jComboBoxOrigin.getSelectedItem().toString();
 				String llegada = jComboBoxDestination.getSelectedItem().toString();
 				Date data = jCalendar1.getDate();
-				int i = tableRides.getSelectedRow();
-				int j = tableRides.getSelectedColumn();
-				System.out.println(tableRides.getValueAt(i,j)); //Aitor fernandez.
 				Ride r = null;
-				//	System.out.println(tableRides.getValueAt(1,i).toString() + salida + llegada + data + Math.toIntExact(Integer.parseInt(tableRides.getValueAt(2,i).toString())) + Float.parseFloat(tableRides.getValueAt(3,i).toString()));
-				//	r = ApplicationLauncher.da.findRides(tableRides.getValueAt(i,1).toString(), salida, llegada, data, Math.toIntExact(Integer.parseInt(tableRides.getValueAt(i,2).toString())), Float.parseFloat(tableRides.getValueAt(i,3).toString()));
-					
-				//////!\\\\\\Prueba
-				// Obtener la fila específica (ejemplo: fila 1)
-        		int fila = 1; // Cambia el índice según la fila deseada
+				//Real hasta la muerte brrrr
+        		int fila = tableRides.getSelectedRow(); 
         		ArrayList<String> filaTexto = new ArrayList<String>();
         		if (fila >= 0 && fila < tableRides.getRowCount()) {	
             		for (int columna = 0; columna < tableRides.getColumnCount(); columna++) {
                 		filaTexto.add(tableRides.getValueAt(fila, columna).toString());
             		}
-            		// Imprimir la fila
             		System.out.println("Fila " + fila + ": " + filaTexto.toString());
         		} else {
-            		System.out.println("Índice de fila fuera de rango.");
+            		System.out.println("Indice de fila fuera de rango.");
         		}
-				//////////!\Prueba
-        		r = ApplicationLauncher.da.findRides(filaTexto.get(0), salida, llegada, data,(int) Float.parseFloat(filaTexto.get(1)), Float.parseFloat(filaTexto.get(2)));
+        		r = ApplicationLauncher.da.findRides(filaTexto.get(0), salida, llegada, data,(int)Float.parseFloat(filaTexto.get(1)), Float.parseFloat(filaTexto.get(2)));
+				System.out.println("a bookRide llega esta persona" + r.toString());
 				if(r != null) {
 					PaymentGUI d = new PaymentGUI(t, r);
 					d.setVisible(true);
@@ -217,7 +210,7 @@ public class BookRideGUI extends JFrame {
 							// Con este código se dejará como 1 de febrero en el JCalendar
 							calendarAct.set(Calendar.MONTH, monthAnt+1);
 							calendarAct.set(Calendar.DAY_OF_MONTH, 1);
-						}						
+						}
 
 						jCalendar1.setCalendar(calendarAct);
 
@@ -298,6 +291,7 @@ public class BookRideGUI extends JFrame {
 		getContentPane().add(jClose);
 
 	}
+	@SuppressWarnings("deprecation")
 	public static void paintDaysWithEvents(JCalendar jCalendar,List<Date> datesWithEventsCurrentMonth, Color color) {
 		//		// For each day with events in current month, the background color for that day is changed to cyan.
 

@@ -4,7 +4,7 @@ import businessLogic.BLFacade;
 import configuration.UtilDate;
 
 import com.toedter.calendar.JCalendar;
-import domain.Ride;
+//import domain.Ride;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -228,6 +228,7 @@ public class FindRidesGUI extends JFrame {
 		paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
 
 	}
+	@SuppressWarnings("deprecation")
 	public static void paintDaysWithEvents(JCalendar jCalendar,List<Date> datesWithEventsCurrentMonth, Color color) {
 		//		// For each day with events in current month, the background color for that day is changed to cyan.
 

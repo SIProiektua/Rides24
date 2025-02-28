@@ -54,7 +54,7 @@ public class PaymentGUI extends JDialog {
 	 * Create the frame.
 	 */
 	public PaymentGUI(Traveler t, Ride r) {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -65,6 +65,7 @@ public class PaymentGUI extends JDialog {
 		prezioFinala = new JTextArea();
 		prezioFinala.setBounds(312, 11, 112, 22);
 		contentPane.add(prezioFinala);
+		prezioFinala.setText(r.getPrice()+" ");
 		
 		kopurua = new JLabel("KopuruTotala");
 		kopurua.setBounds(10, 16, 90, 14);
@@ -73,7 +74,7 @@ public class PaymentGUI extends JDialog {
 		payTrip = new JButton("Ordaindu");
 		payTrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				hasalreadypayed = true;
+				hasalreadypayed = true;//Esto p
 				dispose();
 				//HAY QUE CREAR UN CHIVATO PARA QUE TE DIGA QUIEN NO HA PAGADO Y SI ES EL MISMO VIAJE TIENE QUE SER EL MISMO PRECIO
 			}
