@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.WindowAdapter;
+//import java.awt.event.WindowAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -63,7 +63,7 @@ public class BookRideGUI extends JFrame {
 	private List<Date> datesWithRidesCurrentMonth = new Vector<Date>();
 
 	private JTable tableRides= new JTable();
-	private final JButton jClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
+	private final JButton jClosi = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
 	private DefaultTableModel tableModelRides;
 
 
@@ -77,7 +77,7 @@ public class BookRideGUI extends JFrame {
 
 	public BookRideGUI(Traveler t)
 	{
-		
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(700, 500));
 		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.FindRides"));
@@ -90,37 +90,39 @@ public class BookRideGUI extends JFrame {
 
 		jPayTravel.setBounds(new Rectangle(137, 420, 130, 30));
 
-		jPayTravel.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
+		jPayTravel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				String salida = jComboBoxOrigin.getSelectedItem().toString();
 				String llegada = jComboBoxDestination.getSelectedItem().toString();
 				Date data = jCalendar1.getDate();
 				Ride r = null;
-				//Real hasta la muerte brrrr
-        		int fila = tableRides.getSelectedRow(); 
-        		ArrayList<String> filaTexto = new ArrayList<String>();
-        		if (fila >= 0 && fila < tableRides.getRowCount()) {	
-            		for (int columna = 0; columna < tableRides.getColumnCount(); columna++) {
-                		filaTexto.add(tableRides.getValueAt(fila, columna).toString());
-            		}
-            		System.out.println("Fila " + fila + ": " + filaTexto.toString());
-        		} else {
-            		System.out.println("Indice de fila fuera de rango.");
-        		}
-        		r = ApplicationLauncher.da.findRides(filaTexto.get(0), salida, llegada, data,(int)Float.parseFloat(filaTexto.get(1)), Float.parseFloat(filaTexto.get(2)));
-				System.out.println("a bookRide llega esta persona" + r.toString());
-				if(r != null) {
+				int fila = tableRides.getSelectedRow();
+				ArrayList<String> filaTexto = new ArrayList<String>();
+				if (fila >= 0 && fila < tableRides.getRowCount()) {
+					for (int columna = 0; columna < tableRides.getColumnCount(); columna++) {
+						filaTexto.add(tableRides.getValueAt(fila, columna).toString());
+					}
+					System.out.println("Fila " + fila + ": " + filaTexto.toString());
+				} else {
+					System.out.println("Indice de fila fuera de rango.");
+				}
+				if (!filaTexto.isEmpty()) {
+					r = ApplicationLauncher.da.findRides(filaTexto.get(0), salida, llegada, data,
+							(int) Float.parseFloat(filaTexto.get(1)), Float.parseFloat(filaTexto.get(2)));
+				} else {
+					System.out.println("ERROR Gravisimo en bookRideGUI, Requiere intervencion manual");
+				}
+				if (r != null) {
+					System.out.println("a bookRide llega esta persona" + r.toString());
 					PaymentGUI d = new PaymentGUI(t, r);
 					d.setVisible(true);
-				}else {
+				} else {
 					System.out.println("ERROR HAS HAPPENED");
 				}
 				jButton2_actionPerformed(e);
-				
 			}
 		});
+
 		BLFacade facade = MainGUI.getBusinessLogic();
 		List<String> origins=facade.getDepartCities();
 		
@@ -279,19 +281,18 @@ public class BookRideGUI extends JFrame {
 		this.getContentPane().add(scrollPaneEvents, null);
 		datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
 		paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
-		jClose.addActionListener(new ActionListener() {
+		jClosi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				MainGUIt b = new MainGUIt(t);
 				b.setVisible(true);
 			}
 		});
-		jClose.setBounds(new Rectangle(137, 420, 130, 30));
-		jClose.setBounds(467, 424, 130, 30);
+		jClosi.setBounds(new Rectangle(137, 420, 130, 30));
+		jClosi.setBounds(467, 424, 130, 30);
 		
-		getContentPane().add(jClose);
+		getContentPane().add(jClosi);
 
 	}
-	@SuppressWarnings("deprecation")
 	public static void paintDaysWithEvents(JCalendar jCalendar,List<Date> datesWithEventsCurrentMonth, Color color) {
 		//		// For each day with events in current month, the background color for that day is changed to cyan.
 

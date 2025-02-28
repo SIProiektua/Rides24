@@ -42,35 +42,42 @@ public class LoginGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public LoginGUI() {
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				ApplicationLauncher.da.close();
-			}
-			
-		});
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		UserL = new JTextField();
+		UserL.setBounds(149, 42, 240, 20);
+		contentPane.add(UserL);
+		UserL.setColumns(10);
+		
 		jRegisterB = new JButton("LOGIN");
 		jRegisterB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//SORTU BEHAR DA DATU BASEAN ERABILTZAILEA BILATZEKO ETA GERO INFORMAZIOA SAIOA HASTEKO
 				try {
-					if(ApplicationLauncher.da.getPass(UserL.getText(),passwordField.getText())==true) {
-						if(ApplicationLauncher.da.getUserType(UserL.getName())=="Traveler") {
-							MainGUIt a = new MainGUIt((Traveler)ApplicationLauncher.da.getUser2(UserL.getName()));
+					System.out.println("holalalalalho");
+					System.out.print(passwordField.getText());
+					System.out.println(ApplicationLauncher.da.getPass(UserL.getText(),passwordField.getText()));
+					if(ApplicationLauncher.da.getPass(UserL.getText(),passwordField.getText())) {
+						System.out.println("holalalalalho2");
+						User d = ApplicationLauncher.da.getUserByEmail(UserL.getText());//Se queda aqui!!
+						System.out.println("Esto no deberia ser null" + d.toString());
+						String s =ApplicationLauncher.da.getUserTypeByEmail(UserL.getText());
+						if(s.equals("Traveler")) {
+							MainGUIt a = new MainGUIt((Traveler)d);
 							a.setVisible(true);
-						}else if(ApplicationLauncher.da.getUserType(UserL.getName())=="Driver") {
-							MainGUI b = new MainGUI((Driver)ApplicationLauncher.da.getUser2(UserL.getName()));
+						}else if(s.equals("Driver")) {
+							MainGUI b = new MainGUI((Driver)d);
 							b.setVisible(true);
 						}else {
 							throw new Exception();
 						}
+					}else {
+						System.out.print("NO PASO DE AQUI");
 					}
 				}catch (Exception exc) {
 					exc.getMessage();
@@ -84,14 +91,9 @@ public class LoginGUI extends JFrame {
 		lblNewLabel.setBounds(38, 98, 58, 14);
 		contentPane.add(lblNewLabel);
 		
-		lblNewLabel_2 = new JLabel("Username");
+		lblNewLabel_2 = new JLabel("Email");
 		lblNewLabel_2.setBounds(38, 45, 58, 14);
 		contentPane.add(lblNewLabel_2);
-		
-		UserL = new JTextField();
-		UserL.setBounds(149, 42, 240, 20);
-		contentPane.add(UserL);
-		UserL.setColumns(10);
 		
 		passwordField = new JPasswordField();
 		passwordField.setBounds(149, 95, 240, 20);

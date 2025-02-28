@@ -16,8 +16,7 @@ import businessLogic.BLFacade;
 import businessLogic.BLFacadeImplementation;
 import dataAccess.*;
 public class ApplicationLauncher { 
-	public static DataAccess da = new DataAccess();
-	
+	public static DataAccess da;
 	
 	public static void main(String[] args) {
 		// try{
@@ -37,8 +36,9 @@ public class ApplicationLauncher {
 	    Driver driver=new Driver("driver3@gmail.com","Test Driver");
 	    
 		Traveler traveler = new Traveler("jonormae@hotmail.com", "Test Traveller");
-		//SelectGUI a = new SelectGUI();
-		MainGUIt a = new MainGUIt(traveler);
+		SelectGUI a = new SelectGUI();
+		//MainGUIt a = new MainGUIt(traveler);
+		//MainGUI a = new MainGUI(driver);
 		a.setVisible(true);
 		
 	
@@ -49,8 +49,7 @@ public class ApplicationLauncher {
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 			
 			if (c.isBusinessLogicLocal()) {
-			
-				DataAccess da= new DataAccess();
+				da = new DataAccess();
 				appFacadeInterface=new BLFacadeImplementation(da);
 
 				
@@ -60,6 +59,7 @@ public class ApplicationLauncher {
 				
 				 String serviceName= "http://"+c.getBusinessLogicNode() +":"+ c.getBusinessLogicPort()+"/ws/"+c.getBusinessLogicName()+"?wsdl";
 				 
+				@SuppressWarnings("deprecation")
 				URL url = new URL(serviceName);
 
 		 

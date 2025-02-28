@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class FindRidesGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
-
+	
 
 	private JComboBox<String> jComboBoxOrigin = new JComboBox<String>();
 	DefaultComboBoxModel<String> originLocations = new DefaultComboBoxModel<String>();
@@ -55,7 +55,7 @@ public class FindRidesGUI extends JFrame {
 
 	public FindRidesGUI()
 	{
-
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(700, 500));
 		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("FindRidesGUI.FindRides"));

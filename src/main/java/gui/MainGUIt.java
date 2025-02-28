@@ -48,13 +48,7 @@ public class MainGUIt extends JFrame {
 		
 		public MainGUIt(Traveler t) {
 			super();
-			addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosed(WindowEvent e) {
-					ApplicationLauncher.da.close();
-				}
-				
-			});
+			//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		travel=t;
 		this.setSize(271, 295);
 		this.setSize(495, 290);
