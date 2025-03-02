@@ -1,6 +1,6 @@
 1. Aurkitutako arazoak. Zeintzuk dira eduki dituzuen arazo garrantzitsuenak eta
 nola bideratu dituzue.
-Arazo larriena LGOIN-ean izan dugu informazioa ez zen modu egokian gordetzen zuzentzeko: email eta kontraseña jastozen dira, kontraeña zuzena bada, sartzen da. Baina gertatzen zen informazioa ez zen maneiatzen ondo, zeren eta, char array bat sotzen zen array bat sortu baino.
+Arazo larriena LOGIN-ean izan dugu informazioa ez zen modu egokian gordetzen email eta kontraseña jastozen ziren, kontraeña zuzena bada, sartzen zen. Baina gertatzen zen informazioa ez zela maneiatzen ondo, zeren eta, char array bat sotzen zen eta horri toString bat egiten genion [C@60f52a05 motatako stringa gordetzen, konpontzeko new String(arraya) egin behar zen.
 3. Erabilpen kasu hedatuen eredua.
 4. Domeinu eredu hedatua.
 5. Diseinatutako erabilpen kasuen UML sekuentzia diagramak.
