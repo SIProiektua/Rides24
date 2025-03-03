@@ -6,7 +6,7 @@ Beste izndako arazoa hurrengokoa izan da: dataAccess-en datuak bikoiztu egiten z
 Beste arazorik larriena hurrengokoa da: bookRides klasean informazioa ez zen gordetzen modu egokian datu basean zeren eta falta zitzaion bi cast egitea, hurrengoko GUI-an sartzeko zeren eta ez ziren bihurtzen Ride klasera gero PaymentGUI-n agertzeko bidairen prezioa
 
 
-StarUML+Argazkietan topatuko dituzu:
+StarUML+Argazkietan topatuko dituzu: (EskakizunBilketa, XXXXFluxu, XXXXFluxu2)
 
 2. Erabilpen kasu hedatuen eredua.
 
