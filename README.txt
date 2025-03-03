@@ -6,31 +6,13 @@ Beste izndako arazoa hurrengokoa izan da: dataAccess-en datuak bikoiztu egiten z
 Beste arazorik larriena hurrengokoa da: bookRides klasean informazioa ez zen gordetzen modu egokian datu basean zeren eta falta zitzaion bi cast egitea, hurrengoko GUI-an sartzeko zeren eta ez ziren bihurtzen Ride klasera gero PaymentGUI-n agertzeko bidairen prezioa
 
 
-StarUML+Argazkietan topatuko dituzu: (EskakizunBilketa, XXXXFluxu, XXXXFluxu2)
-
-2. Erabilpen kasu hedatuen eredua.
-
-
-
-3. Domeinu eredu hedatua.
-
-
-
-4. Diseinatutako erabilpen kasuen UML sekuentzia diagramak.
-
-
-
-5. Diseinuzko klaseak
-
-
-
-6. Inplementazioaren iturburu-kodea formatu elektronikoan.
-
-
-
-Ez da inprimatu behar.
+StarUML+Argazkietan topatuko dituzu:
+1. Erabilpen kasu hedatuen eredua.
+2. Domeinu eredu hedatua.
+3. Diseinatutako erabilpen kasuen UML sekuentzia diagramak.
+4. Diseinuzko klaseak
+5. Inplementazioaren iturburu-kodea formatu elektronikoan.
 
 
 Bideoa:
-
 https://upvehueus-my.sharepoint.com/:v:/g/personal/aalvarez186_ikasle_ehu_eus/EVdhkSyzqv5BowPi0erFk8gBLhtrBxsW-ZMoaLG_q92npw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=Cehs6F
