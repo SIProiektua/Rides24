@@ -1,5 +1,16 @@
+Taldeko Kideak: Ander Alvarez, Andoni Armendariz, Beñat Arruti, Maider Delera
+
+Inplementatutako erabilpen kasuak: 
+Driver: Create Ride
+Traveler: Cancel Ride, Query Rides, Book Ridesç
+No Registered: Register, Query Rides, Login
+
+Internalizazioa: Bai, adaptatzeko erreztasuna dago beste hizkuntz lengoai batera aldatuko bagenu. Hizkuntz desberdinen araberako beharrezko aldaketak ezarriz
+
 Bideoa:
 https://upvehueus-my.sharepoint.com/:v:/g/personal/aalvarez186_ikasle_ehu_eus/EVdhkSyzqv5BowPi0erFk8gBLhtrBxsW-ZMoaLG_q92npw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=Cehs6F
+
+
 1. Aurkitutako arazoak. Zeintzuk dira eduki dituzuen arazo garrantzitsuenak eta
 nola bideratu dituzue.
 
@@ -19,3 +30,8 @@ EskakizunBilketaFluxu eta EskakizunBilketaFluxu2 pdf formatuan agertuko da
 StarUML
 5. Inplementazioaren iturburu-kodea formatu elektronikoan.
 src karpetan
+
+Erabilitako Orduak: 
+Klase orduak: 4-5 ordu
+Klase kanpo: 20 ordu
+Guztira 24-25 ordu
