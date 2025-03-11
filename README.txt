@@ -1,3 +1,5 @@
+Bideoa:
+https://upvehueus-my.sharepoint.com/:v:/g/personal/aalvarez186_ikasle_ehu_eus/EVdhkSyzqv5BowPi0erFk8gBLhtrBxsW-ZMoaLG_q92npw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=Cehs6F
 1. Aurkitutako arazoak. Zeintzuk dira eduki dituzuen arazo garrantzitsuenak eta
 nola bideratu dituzue.
 
@@ -8,11 +10,12 @@ Beste arazorik larriena hurrengokoa da: bookRides klasean informazioa ez zen gor
 
 StarUML+Argazkietan topatuko dituzu:
 1. Erabilpen kasu hedatuen eredua.
+StarUML
 2. Domeinu eredu hedatua.
+StarUML
 3. Diseinatutako erabilpen kasuen UML sekuentzia diagramak.
+EskakizunBilketaFluxu eta EskakizunBilketaFluxu2 pdf formatuan agertuko da
 4. Diseinuzko klaseak
+StarUML
 5. Inplementazioaren iturburu-kodea formatu elektronikoan.
-
-
-Bideoa:
-https://upvehueus-my.sharepoint.com/:v:/g/personal/aalvarez186_ikasle_ehu_eus/EVdhkSyzqv5BowPi0erFk8gBLhtrBxsW-ZMoaLG_q92npw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=Cehs6F
+src karpetan
