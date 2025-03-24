@@ -1,4 +1,4 @@
-Github esteka: https://github.com/SIProiektua/Rides24
+Github esteka: https://github.com/SIProiektua/Rides24.git
 
 Taldeko Kideak: Ander Alvarez, Andoni Armendariz, Beñat Arruti, Maider Delera
 
