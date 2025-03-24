@@ -122,6 +122,9 @@ public class MainGUIt extends JFrame {
 		panel.setBounds(10, 201, 414, 49);
 		jContentPane.add(panel);
 
+		setContentPane(jContentPane);
+		setTitle(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.MainTitle") + " - traveler :"+travel.getName());
+
 	}
 	private void paintAgain() {
 		jLabelSelectOption.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.SelectOption"));
