@@ -2663,3 +2663,167 @@ New type java.util.Vector<domain.Ride>
 [2025-03-24 20:16:55 #13 type.registry] 
 New type java.util.ArrayList<java.lang.Object>
 
+------------------------------------------------------------------------------------------------------------------------
+
+[2025-03-24 21:17:43 #1 store] 
+Database 'C:\Users\ander\git\Rides24\src\main\resources\rides.temp' is opened by 17600@LAPTOP-KQMM363R
+
+[2025-03-24 21:17:43 #2 type.registry] 
+New type domain.User
+
+[2025-03-24 21:17:43 #3 type.registry] 
+New type domain.Driver
+
+[2025-03-24 21:17:43 #4 type] 
+Type domain.User is not enhanced.
+
+[2025-03-24 21:17:43 #5 type.registry] 
+New type domain.Ride
+
+[2025-03-24 21:17:43 #6 type] 
+Type domain.Driver is not enhanced.
+
+[2025-03-24 21:17:43 #7 type] 
+Type domain.Ride is not enhanced.
+
+[2025-03-24 21:17:43 #8 type.registry] 
+New type domain.Traveler
+
+[2025-03-24 21:17:43 #9 type.registry] 
+New type java.util.ArrayList<domain.Traveler>
+
+[2025-03-24 21:17:43 #10 type] 
+Type domain.Traveler is not enhanced.
+
+[2025-03-24 21:17:43 #11 type.registry] 
+New type java.util.Vector<java.lang.Object>
+
+[2025-03-24 21:17:43 #12 type.registry] 
+New type java.util.Vector<domain.Ride>
+
+[2025-03-24 21:17:43 #13 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2025-03-24 21:17:57 #1 store] 
+Database 'C:\Users\ander\git\Rides24\src\main\resources\rides.temp' is opened by 27208@LAPTOP-KQMM363R
+
+[2025-03-24 21:17:57 #2 type.registry] 
+New type domain.User
+
+[2025-03-24 21:17:57 #3 type.registry] 
+New type domain.Driver
+
+[2025-03-24 21:17:57 #4 type] 
+Type domain.User is not enhanced.
+
+[2025-03-24 21:17:57 #5 type.registry] 
+New type domain.Ride
+
+[2025-03-24 21:17:57 #6 type] 
+Type domain.Driver is not enhanced.
+
+[2025-03-24 21:17:57 #7 type] 
+Type domain.Ride is not enhanced.
+
+[2025-03-24 21:17:57 #8 type.registry] 
+New type domain.Traveler
+
+[2025-03-24 21:17:58 #9 type.registry] 
+New type java.util.ArrayList<domain.Traveler>
+
+[2025-03-24 21:17:58 #10 type] 
+Type domain.Traveler is not enhanced.
+
+[2025-03-24 21:17:58 #11 type.registry] 
+New type java.util.Vector<java.lang.Object>
+
+[2025-03-24 21:17:58 #12 type.registry] 
+New type java.util.Vector<domain.Ride>
+
+[2025-03-24 21:17:58 #13 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2025-03-24 21:19:48 #1 store] 
+Database 'C:\Users\ander\git\Rides24\src\main\resources\rides.temp' is opened by 31584@LAPTOP-KQMM363R
+
+[2025-03-24 21:19:48 #2 type.registry] 
+New type domain.User
+
+[2025-03-24 21:19:48 #3 type.registry] 
+New type domain.Driver
+
+[2025-03-24 21:19:48 #4 type] 
+Type domain.User is not enhanced.
+
+[2025-03-24 21:19:48 #5 type.registry] 
+New type domain.Ride
+
+[2025-03-24 21:19:48 #6 type] 
+Type domain.Driver is not enhanced.
+
+[2025-03-24 21:19:48 #7 type] 
+Type domain.Ride is not enhanced.
+
+[2025-03-24 21:19:48 #8 type.registry] 
+New type domain.Traveler
+
+[2025-03-24 21:19:48 #9 type.registry] 
+New type java.util.ArrayList<domain.Traveler>
+
+[2025-03-24 21:19:48 #10 type] 
+Type domain.Traveler is not enhanced.
+
+[2025-03-24 21:19:48 #11 type.registry] 
+New type java.util.Vector<java.lang.Object>
+
+[2025-03-24 21:19:48 #12 type.registry] 
+New type java.util.Vector<domain.Ride>
+
+[2025-03-24 21:19:48 #13 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
+------------------------------------------------------------------------------------------------------------------------
+
+[2025-03-24 21:22:10 #1 store] 
+Database 'C:\Users\ander\git\Rides24\src\main\resources\rides.temp' is opened by 31424@LAPTOP-KQMM363R
+
+[2025-03-24 21:22:10 #2 type.registry] 
+New type domain.User
+
+[2025-03-24 21:22:10 #3 type.registry] 
+New type domain.Driver
+
+[2025-03-24 21:22:10 #4 type] 
+Type domain.User is not enhanced.
+
+[2025-03-24 21:22:10 #5 type.registry] 
+New type domain.Ride
+
+[2025-03-24 21:22:10 #6 type] 
+Type domain.Driver is not enhanced.
+
+[2025-03-24 21:22:10 #7 type] 
+Type domain.Ride is not enhanced.
+
+[2025-03-24 21:22:10 #8 type.registry] 
+New type domain.Traveler
+
+[2025-03-24 21:22:10 #9 type.registry] 
+New type java.util.ArrayList<domain.Traveler>
+
+[2025-03-24 21:22:10 #10 type] 
+Type domain.Traveler is not enhanced.
+
+[2025-03-24 21:22:10 #11 type.registry] 
+New type java.util.Vector<java.lang.Object>
+
+[2025-03-24 21:22:10 #12 type.registry] 
+New type java.util.Vector<domain.Ride>
+
+[2025-03-24 21:22:10 #13 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
