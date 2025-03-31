@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Random;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,7 +21,10 @@ import javax.persistence.TypedQuery;
 
 import configuration.ConfigXML;
 import configuration.UtilDate;
+import domain.Book;
+import domain.Car;
 import domain.Driver;
+import domain.Mugimendua;
 import domain.Ride;
 import domain.Traveler;
 import exceptions.RideAlreadyExistException;
@@ -96,17 +101,17 @@ public class DataAccess {
 			driver3.setID("12345678F");
 
 			// Create rides
-			driver1.addRide("Donostia", "Bilbo", UtilDate.newDate(year, month, 15), 4, 7);
-			driver1.addRide("Donostia", "Gazteiz", UtilDate.newDate(year, month, 6), 4, 8);
-			driver1.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 25), 4, 4);
+			driver1.addRide("Donostia", "Bilbo", UtilDate.newDate(year, month, 15), 4, 7, null);
+			driver1.addRide("Donostia", "Gazteiz", UtilDate.newDate(year, month, 6), 4, 8, null);
+			driver1.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 25), 4, 4, null);
 
-			driver1.addRide("Donostia", "Iruña", UtilDate.newDate(year, month, 7), 4, 8);
+			driver1.addRide("Donostia", "Iruña", UtilDate.newDate(year, month, 7), 4, 8, null);
 
-			driver2.addRide("Donostia", "Bilbo", UtilDate.newDate(year, month, 15), 3, 3);
-			driver2.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 25), 2, 5);
-			driver2.addRide("Eibar", "Gasteiz", UtilDate.newDate(year, month, 6), 2, 5);
+			driver2.addRide("Donostia", "Bilbo", UtilDate.newDate(year, month, 15), 3, 3, null);
+			driver2.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 25), 2, 5, null);
+			driver2.addRide("Eibar", "Gasteiz", UtilDate.newDate(year, month, 6), 2, 5, null);
 
-			driver3.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 14), 1, 3);
+			driver3.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 14), 1, 3, null);
 
 			db.merge(driver1);
 			db.merge(driver2);
@@ -123,67 +128,87 @@ public class DataAccess {
 	// errezten da jakiteko den driver edo Traveler, gero informazio guztia
 	// gordetzen da
 
-public void createUser(boolean b, String ID, String name, String pass, String username, String email) {
-  db.getTransaction().begin();
-  User u1;
-  if (b == true) {
-    Traveler t1 = new Traveler(email, name, ID, username, pass);
-    u1 = (User) t1;
-  } else {
-    Driver d1 = new Driver(email, name, ID, username, pass);
-    u1 = (User) d1;
-  }
-  System.out.println("se guardará: " + u1.toString());
-  db.merge(u1);
-  db.getTransaction().commit();
-}
+	public void createUser(boolean b, String ID, String name, String pass, String username, String email) {
+		db.getTransaction().begin();
+		User u1;
+		if (b == true) {
+			Traveler t1 = new Traveler(email, name, ID, username, pass);
+			u1 = (User) t1;
+		} else {
+			Driver d1 = new Driver(email, name, ID, username, pass);
+			u1 = (User) d1;
+		}
+		System.out.println("se guardará: " + u1.toString());
+		db.merge(u1);
+		db.getTransaction().commit();
+	}
 
+	public void aCar(User r, Car c){
+		if(db.find(User.class, r)!=null){
+			Driver s = (Driver)db.find(User.class, r);
+			s.addCar(c);
+			db.merge(s);
+			db.getTransaction().commit();
+		}else{
+			System.out.println("THIS CAR ALREADY EXISTS!");
+		}
+	}
 
-public String getUserType(String u) {
-System.out.println("Este es el nombre de usuario para buscar=  "+u);
-TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.name = :name", User.class);
-query.setParameter("name", u);
-List<User> user = query.getResultList();
- if (user.isEmpty()) {
- System.out.println("FATAL ERROR UserType");
- }
- System.out.println(u);
- System.out.println(user.get(0).getClass().getSimpleName());
- System.out.print("NO ME VOY A MORIR");
- return user.get(0).getClass().getSimpleName();
+	public void saveBooking(Book b, Traveler t) {
+	    db.getTransaction().begin();
+		List<Book> lbook =  t.getBookList();
+		if(!lbook.contains(b)){
+			lbook.add(b);
+		}
+	    db.merge(t);  
+	    db.getTransaction().commit();
+	}
 
-}
+	public User getUserByPlate(String plate){
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r", User.class);
+		List<User> user = query.getResultList();
+		Iterator<User> it = user.iterator();
+		while(it.hasNext()){
+			User us = it.next();
+			if(us instanceof Driver){
+				Driver dr = (Driver) us;
+				List<Car> carlista = dr.getCars();
+				for(Car c: carlista){
+					if(c.getNumberPlate().equals(plate)){
+						return us;
+					}
+				}
+			}
+		}
+		return new User();
+	}
 
-public String getUserTypeByEmail(String u) {
-	//  System.out.println("Este es el nombre de usuario para buscar=  "+u);
-	//	TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.email = :email", User.class);
-	//	query.setParameter("email", u);
-	//  List<User> user = query.getResultList();
-	 // if (user.isEmpty()) {
-	//    System.out.println("FATAL ERROR UserType");
-	 // }
-	//  System.out.println(u);
-	 // System.out.println(user.get(0).getClass().getSimpleName());
-	 // return user.get(0).getClass().getSimpleName();
-	 User u1 = db.find(User.class,u);
-	 System.out.println("Tipo de usuario: " + u1.getClass().getSimpleName());
-	  return u1.getClass().getSimpleName();
-}
+	public void paying(Driver d, Traveler t, Mugimendua m){
+		Mugimendua m1 = db.find(Mugimendua.class, m);
+		d.addBalance(m1.getZenbat());
+		t.addBalance(0 - m1.getZenbat());
+		db.merge(d);
+		db.merge(t);
+		db.getTransaction().commit();
+	}
 
-// public String getUsType(String u) {
-//   System.out.println("Este es el nombre de usuario para buscar=  "+u);
-//   TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.email = :email", User.class);
-//   query.setParameter("email", u);
-//   List<User> user = query.getResultList();
-//   if (user.isEmpty()) {
-//     System.out.println("FATAL ERROR UsType");
-//     return null;
-//   }
-//   System.out.println(u);
-//   System.out.println(user.get(0).getClass().getSimpleName());
-//   return user.get(0).getClass().getSimpleName();
-// }
+	public String getUserType(String u) {
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.name = :name", User.class);
+		query.setParameter("name", u);
+		List<User> user = query.getResultList();
+		if (user.isEmpty()) {
+			System.out.println("FATAL ERROR UserType");
+		}
+		return user.get(0).getClass().getSimpleName();
+	}
 
+	public String getUserTypeByEmail(String u) {
+		 User u1 = db.find(User.class,u);
+		 System.out.println("Tipo de usuario: " + u1.getClass().getSimpleName());
+		  return u1.getClass().getSimpleName();
+	}
+	
+	
 	public boolean getUser(String u) {
 		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.name =:name",
 				User.class);
@@ -207,6 +232,103 @@ public String getUserTypeByEmail(String u) {
 		}
 		return null;
 	}
+	
+	public String cancelRide(Ride r) {
+    	Ride f = db.find(Ride.class, r.getRideNumber());
+    	String s = "Ride couldn't be canceled because it doesn't exist.";
+    	if (f != null) {
+     	   db.getTransaction().begin();
+      	   try {
+            	List<Book> bookingList = new ArrayList<>(f.getErreserbaLista());
+            		for (Book b : bookingList) {
+             		   Traveler t = b.getTraveler();
+              			if (t != null) {
+               			    t.getBookList().remove(b);
+                 		    t.getRides().remove(f);
+                		    db.merge(t);
+               			}
+                		f.getErreserbaLista().remove(b);
+                		db.remove(b);
+            		}
+            	db.remove(f);
+            	db.getTransaction().commit();
+            	s = "Ride " + r.toString() + " canceled successfully.";
+        	} catch (Exception e) {
+            db.getTransaction().rollback();
+            s = "Ride couldn't be canceled due to an internal error: " + e.getMessage();
+       	 	}
+    	}
+    	return s;
+	}
+
+	public boolean hasEnoughBalance(Traveler t, float i){
+		return i<db.find(Traveler.class, t).getBalance();
+	}
+
+	public void addBalance(Traveler t, float i) {
+    	db.getTransaction().begin();
+    		try {
+        		Traveler found = db.find(Traveler.class, t.getEmail());
+        		if (found != null) {
+            		found.setBalance(found.getBalance() + i); // Sumamos al balance actual
+            		db.merge(found); // Actualizamos en la base de datos
+            		db.getTransaction().commit();
+        		} else {
+            		db.getTransaction().rollback();
+            		System.out.println("Traveler not found.");
+        		}
+    		} catch (Exception e) {
+        		db.getTransaction().rollback();
+        		System.out.println("Error while adding balance: " + e.getMessage());
+    		}
+	}
+
+	public List<Ride> bueltatuBukatutakoRideak(){
+		//TypedQuery<Ride> query = db.createQuery("SELECT DISTINCT r FROM Ride r", Ride.class);
+		//List<Ride> lride = query.getResultList();
+		//List<Ride> lrideend = new ArrayList<Ride>();
+//		for(Ride r: lride){
+			//if(r.getDate().equals())
+//		}
+		return null;
+	}
+
+
+	public List<Mugimendua> getMovements(String id, String bookcode){
+		Book b = db.find(Book.class,bookcode);
+		return b.getMugimenduak();
+	}
+	 
+	public String cancelBooking(int bookingId) {
+    		Book booking = db.find(Book.class, bookingId);
+    		String msg = "Booking doesn't exist or couldn't be canceled.";
+
+    		if (booking == null) return msg;
+
+    		db.getTransaction().begin();
+    		try {
+    			Ride ride = booking.getRide();
+    			Traveler traveler = booking.getTraveler();
+     				if (ride != null) {
+    	 		       ride.setAvailablePlaces(ride.getAvailablePlaces() + booking.getSeats());
+      	    	       ride.getErreserbaLista().remove(booking);
+        		       db.merge(ride);
+        			}
+        			if (traveler != null) {
+            			traveler.getBookList().remove(booking);
+            			db.merge(traveler);
+        			}
+        		db.remove(booking);
+        		db.getTransaction().commit();
+        		msg = "Booking " + booking.toString() + " canceled successfully.";
+    		} catch (Exception e) {
+    		    db.getTransaction().rollback();
+    		    msg = "Error canceling booking: " + e.getMessage();
+    		}
+    	return msg;
+	}
+
+
 
 	public User getUserByEmail(String u) {
 		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.email = :email", User.class);
@@ -241,17 +363,18 @@ public String getUserTypeByEmail(String u) {
 	public boolean getPass(String email, String password) {
 	    try {
 	        User user = db.find(User.class, email);
+	        System.out.println(email);
 	        System.out.println("User: " + user.toString());
 	        String s = new String(user.getPassword());
 	        System.out.println("User Password: " + s);
 	        System.out.println("Password: " + password);
 	        System.out.println(user.isEmpty());
 	        System.out.println(user.getPassword().equals(password));
-	        if (user != null && s.equals(password)) {
+	        if (s.equals(password)) {
 	            return true;
 	        }
 	    } catch (Exception e) {
-	        System.out.println("Errorea erabiltzailea bilatzean: " + e.getMessage());
+	       e.printStackTrace();
 	    }
 	    return false;
 	}
@@ -299,10 +422,10 @@ public String getUserTypeByEmail(String u) {
 	 * @throws RideAlreadyExistException         if the same ride already exists for
 	 *                                           the driver
 	 */
-	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail)
+	public Ride createRide(String from, String to, Date date, int nPlaces, float price, String driverEmail, Car car)
 			throws RideAlreadyExistException, RideMustBeLaterThanTodayException {
 		System.out.println(">> DataAccess: createRide=> from= " + from + " to= " + to + " driver=" + driverEmail
-				+ " date " + date);
+				+ " date " + date + "car" + car);
 		try {
 			// !\Puede que esta linea (↓) deba ser borrada
 			if (getRides(from, to, date).size() > 0)
@@ -319,7 +442,7 @@ public String getUserTypeByEmail(String u) {
 				throw new RideAlreadyExistException(
 						ResourceBundle.getBundle("Etiquetas").getString("DataAccess.RideAlreadyExist"));
 			}
-			Ride ride = driver.addRide(from, to, date, nPlaces, price);
+			Ride ride = driver.addRide(from, to, date, nPlaces, price, car);
 
 			// next instruction can be obviated
 			db.merge(driver);
@@ -332,6 +455,16 @@ public String getUserTypeByEmail(String u) {
 		}
 
 	}
+
+	public String isBooked(String bookId){
+		Book b = db.find(Book.class, bookId);
+		if(b!=null){
+			return b.getEgoera();
+		}
+		return "ERROREA";
+	}
+
+
 
 	/**
 	 * This method retrieves the rides from two locations on a given date
@@ -357,7 +490,7 @@ public String getUserTypeByEmail(String u) {
 		return res;
 	}
 
-	public void updateRides(Traveler t, Ride r) {
+	public void updateRides(Book b, Ride r) {
 		String s1 = r.getFrom();
 		String s2 = r.getTo();
 		Date s3 = r.getDate();
@@ -365,26 +498,26 @@ public String getUserTypeByEmail(String u) {
 		List<Ride> oldRide = getRides(s1, s2, s3);
 		System.out.println("There are " + oldRide.size() + " rides");
 		for (int i = 0; i < oldRide.size(); i++) {
-			if (oldRide.get(i).getRideNumber().equals(r.getRideNumber())) {
+			if (oldRide.get(i).getRideNumber() == r.getRideNumber()) {
 				j = i;
 				break;
 			}
 		}
 		if (j > -1) {
 			Ride oldR = oldRide.get(j);
-			oldR.addTraveler(t);
+			oldR.addBook(b);
 			if (oldR.getnPlaces() > 0) {
-				oldR.setBetMinimum((int) oldR.getnPlaces() - 1);
+				oldR.setAvailablePlaces((int) oldR.getnPlaces() - 1);
 			} else {
 				System.out.println("ERROR NOT FOUND SEATS");
 			}
 		}
 	}
 
-	public void bookRides(Traveler t, Ride r) throws Exception {
+	public void bookRides(Book b, Ride r) throws Exception {
 		if (r.getnPlaces() > 1.00) {
-			updateRides(t, r);
-			System.out.print(t.getName() + "You have booked " + r.getDriver() + " 's travel from" + r.getFrom() + " to "
+			updateRides(b, r);
+			System.out.print(b.getId() + "You have booked " + r.getDriver() + " 's travel from" + r.getFrom() + " to "
 					+ r.getTo());
 		} else {
 			throw new Exception();
@@ -394,15 +527,11 @@ public String getUserTypeByEmail(String u) {
 	public Ride findRides(String drive, String from, String to, Date date, int nPlaces, float price) {
 		Ride f = new Ride();
 		if (getUserType(drive).equals("Driver")) {
-			User n = getUser2(drive);
+			//User n = getUser2(drive);
 			List<Ride> res = new ArrayList<>();
 			res = getRides(from, to, date);
 			for (Ride r : res) {
-				/**
-				 * 1. Arreglar el login
-				 * 2. Que identifique bien el usuario desde BookRideGUI
-				 * 3. Y grabar el video :-)
-				 */
+				
 				if (r.getDriver().getName().equals(drive) && r.getFrom().equals(from) && price == r.getPrice()
 						&& r.getTo().equals(to)) {
 					f = r;
@@ -412,6 +541,7 @@ public String getUserTypeByEmail(String u) {
 		}
 		return f;
 	}
+	
 	/**
 	 * This method retrieves from the database the dates a month for which there are
 	 * events
@@ -466,5 +596,18 @@ public String getUserTypeByEmail(String u) {
 		db.close();
 		System.out.println("DataAcess closed");
 	}
+
+	public static String generateRandomString(int longitud) {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder resultado = new StringBuilder();
+        Random random = new Random();
+
+        for (int i = 0; i < longitud; i++) {
+            int indice = random.nextInt(caracteres.length());
+            resultado.append(caracteres.charAt(indice));
+        }
+
+        return resultado.toString();
+    }
 
 }

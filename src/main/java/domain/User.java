@@ -1,6 +1,7 @@
 package domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -24,10 +25,13 @@ public class User implements Serializable {
 	@Id
 	protected String email;
 	protected String name;
-    protected String ID;
+	protected String ID;
 	protected String username;
 	protected String password;
-	protected String usertype;
+	protected float balance;
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	protected ArrayList<Mugimendua> mugimenduak;
+	
 	/**
 	 * @return the iD
 	 */
@@ -64,18 +68,7 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	/**
-	 * @return the usertype
-	 */
-	public String getUsertype() {
-		return usertype;
-	}
-	/**
-	 * @param usertype the usertype to set
-	 */
-	public void setUsertype(String usertype) {
-		this.usertype = usertype;
-	}
+	
 	/**
 	 * @return the rides
 	 */
@@ -107,13 +100,14 @@ public class User implements Serializable {
 
 	public User() {
 		super();
-		usertype = this.getClass().toString();
+		mugimenduak = new ArrayList<Mugimendua>();
+		
 	}
 	public User(String email, String name) {
         super();
 		this.email = email;
 		this.name = name;
-		usertype = this.getClass().toString();
+		mugimenduak = new ArrayList<Mugimendua>();
 	}
 	public User(String email, String name, String ID, String username, String password) {
         super();
@@ -122,9 +116,8 @@ public class User implements Serializable {
         this.ID = ID;
         this.username=username;
 		this.password=password;
-		usertype = this.getClass().toString();
+		mugimenduak = new ArrayList<Mugimendua>();
 	}
-
 
 	        ///////////////////
             //Setters&Getters//
@@ -182,5 +175,23 @@ public class User implements Serializable {
 		if (email != other.email)
 			return false;
 		return true;
+	}
+	
+	public float getBalance() {
+		return balance;
+	}
+
+	public void setBalance(float balance) {
+		this.balance = balance;
+	}
+
+	public void addBalance(float balance) {
+		this.balance += balance;
+	}
+	public List<Mugimendua> getMugimenduak(){
+		return mugimenduak;
+	}
+	public void addMugimenduak(Mugimendua mugimendua){
+		mugimenduak.add(mugimendua);
 	}
 }

@@ -58,7 +58,7 @@ public class CreateRideTest {
 			
 			//invoke System Under Test (sut)  
 			sut.open();
-		    sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail);
+		    sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail, null);
 			sut.close();
 			
 			fail();
@@ -110,7 +110,7 @@ public class CreateRideTest {
 			
 			//invoke System Under Test (sut)  
 			sut.open();
-			Ride ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail);
+			Ride ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail, null);
 			sut.close();
 			//verify the results
 			assertNotNull(ride);
@@ -174,7 +174,7 @@ public class CreateRideTest {
 				
 				//invoke System Under Test (sut)  
 				sut.open();
-				Ride ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail);
+				Ride ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail, null);
 				System.out.println("ride "+ride);
 
 				//verify the results
@@ -219,7 +219,7 @@ public class CreateRideTest {
 		try {
 			//invoke System Under Test (sut)  
 			sut.open();
-			 ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail);
+			 ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail, null);
 			sut.close();			
 			
 			//verify the results

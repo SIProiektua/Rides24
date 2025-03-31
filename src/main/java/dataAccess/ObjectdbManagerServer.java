@@ -20,6 +20,8 @@ import java.awt.event.ActionEvent;
 /**
  * It runs the database server as a separate process.
  */
+
+@SuppressWarnings("deprecation")
 public class ObjectdbManagerServer extends JDialog {
 
 

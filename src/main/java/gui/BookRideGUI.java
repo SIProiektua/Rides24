@@ -43,7 +43,7 @@ public class BookRideGUI extends JFrame {
 
 	private JComboBox<String> jComboBoxOrigin = new JComboBox<String>();
 	DefaultComboBoxModel<String> originLocations = new DefaultComboBoxModel<String>();
-	private JButton jButtonClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.Close"));
+	//private JButton jButtonClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.Close"));
 	private JComboBox<String> jComboBoxDestination = new JComboBox<String>();
 	DefaultComboBoxModel<String> destinationCities = new DefaultComboBoxModel<String>();
 
@@ -61,9 +61,9 @@ public class BookRideGUI extends JFrame {
 	private JScrollPane scrollPaneEvents = new JScrollPane();
 
 	private List<Date> datesWithRidesCurrentMonth = new Vector<Date>();
+	private MainGUIt b;
 
 	private JTable tableRides= new JTable();
-	private final JButton jClosi = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Close"));
 	private DefaultTableModel tableModelRides;
 
 
@@ -88,7 +88,7 @@ public class BookRideGUI extends JFrame {
 		this.getContentPane().add(jLabelEventDate, null);
 		this.getContentPane().add(jLabelEvents);
 
-		jPayTravel.setBounds(new Rectangle(137, 420, 130, 30));
+		jPayTravel.setBounds(new Rectangle(171, 419, 130, 30));
 
 		jPayTravel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -123,13 +123,13 @@ public class BookRideGUI extends JFrame {
 			}
 		});
 
-		BLFacade facade = MainGUI.getBusinessLogic();
+		BLFacade facade = ApplicationLauncher.getBusinessLogic();
 		List<String> origins=facade.getDepartCities();
 		
 		for(String location:origins) originLocations.addElement(location);
 		
 		jLabelOrigin.setBounds(new Rectangle(6, 56, 92, 20));
-		jLabelDestination.setBounds(6, 81, 61, 16);
+		jLabelDestination.setBounds(6, 81, 85, 16);
 		getContentPane().add(jLabelOrigin);
 
 		getContentPane().add(jLabelDestination);
@@ -146,7 +146,7 @@ public class BookRideGUI extends JFrame {
 		jComboBoxOrigin.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				destinationCities.removeAllElements();
-				BLFacade facade = MainGUI.getBusinessLogic();
+				BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 				List<String> aCities=facade.getDestinationCities((String)jComboBoxOrigin.getSelectedItem());
 				for(String aciti:aCities) {
@@ -167,7 +167,7 @@ public class BookRideGUI extends JFrame {
 
 				paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,	new Color(210,228,238));
 
-				BLFacade facade = MainGUI.getBusinessLogic();
+				BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 				datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
 				paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
@@ -222,7 +222,7 @@ public class BookRideGUI extends JFrame {
 						tableModelRides.setDataVector(null, columnNamesRides);
 						tableModelRides.setColumnCount(4); // another column added to allocate ride objects
 
-						BLFacade facade = MainGUI.getBusinessLogic();
+						BLFacade facade = ApplicationLauncher.getBusinessLogic();
 						List<domain.Ride> rides=facade.getRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),UtilDate.trim(jCalendar1.getDate()));
 
 						if (rides.isEmpty() ) jLabelEvents.setText(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.NoRides")+ ": "+dateformat1.format(calendarAct.getTime()));
@@ -253,12 +253,16 @@ public class BookRideGUI extends JFrame {
 			
 		});
 
-		jButtonClose.setBounds(new Rectangle(148, 420, 130, 30));
-		jButtonClose.addActionListener(new ActionListener() {
+		JButton JRegisterBack = new JButton(Messages.getString("RegisterGUI.Back"));
+		JRegisterBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				b = new MainGUIt(t);
+				b.setVisible(true);
+				dispose();
 			}
 		});
+		JRegisterBack.setBounds(335, 421, 130, 30);
+		this.getContentPane().add(JRegisterBack);
 		
 		this.getContentPane().add(jCalendar1, null);
 
@@ -281,16 +285,6 @@ public class BookRideGUI extends JFrame {
 		this.getContentPane().add(scrollPaneEvents, null);
 		datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
 		paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
-		jClosi.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				MainGUIt b = new MainGUIt(t);
-				b.setVisible(true);
-			}
-		});
-		jClosi.setBounds(new Rectangle(137, 420, 130, 30));
-		jClosi.setBounds(467, 424, 130, 30);
-		
-		getContentPane().add(jClosi);
 
 	}
 	@SuppressWarnings("deprecation")

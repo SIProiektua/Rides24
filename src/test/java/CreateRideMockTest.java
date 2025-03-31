@@ -90,14 +90,14 @@ public class CreateRideMockTest {
 		try {
 					
 			 driver=new Driver(driverEmail,driverName);
-			 driver.addRide(rideFrom, rideTo, rideDate, 0, 0);
+			 driver.addRide(rideFrom, rideTo, rideDate, 0, 0, null);
 			//configure the state through mocks 
 	        Mockito.when(db.find(Driver.class, driver.getEmail())).thenReturn(driver);
 		
 			
 			//invoke System Under Test (sut)  
 			sut.open();
-		    sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail);
+		    sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail, null);
 			sut.close();
 			
 			fail();
@@ -138,7 +138,7 @@ public class CreateRideMockTest {
 					
 			//invoke System Under Test (sut)  
 			sut.open();
-			Ride ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail);
+			Ride ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail, null);
 			sut.close();
 			//verify the results
 			assertNotNull(ride);
@@ -192,7 +192,7 @@ public class CreateRideMockTest {
 				
 				//invoke System Under Test (sut)  
 				sut.open();
-				Ride ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail);
+				Ride ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail, null);
 				System.out.println("ride "+ride);
 
 				//verify the results
@@ -246,7 +246,7 @@ public class CreateRideMockTest {
 			
 	        //invoke System Under Test (sut)  
 			sut.open();
-			 ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail);
+			 ride=sut.createRide(rideFrom, rideTo, rideDate, 0, 0, driverEmail, null);
 			sut.close();			
 			//verify the results
 			assertNull(ride);

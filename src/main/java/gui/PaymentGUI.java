@@ -7,11 +7,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import domain.Book;
+import domain.Driver;
+import domain.Mugimendua;
 import domain.Ride;
 import domain.Traveler;
 
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -74,7 +78,30 @@ public class PaymentGUI extends JFrame {
 		payTrip = new JButton(ResourceBundle.getBundle("Etiquetas").getString("PaymentGUI.Pay"));
 		payTrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				Driver d = r.getDriver();
+				if(true/*t.getBalance()>r.getPrice()*/){
+					t.setBalance(t.getBalance()-r.getPrice());
+					d.setBalance(d.getBalance()+r.getPrice());
+					//Create Book
+					Book book = new Book(1,"CORRECT");
+					book.setRide(r);
+					book.setTraveler(t);
+					t.addBook(book);
+
+					//Create movement
+					Mugimendua mugimendua = new Mugimendua();
+					mugimendua.setNondik(t);
+					mugimendua.setNora(d);
+					mugimendua.setZenbat(r.getPrice());
+					mugimendua.setBook(book);
+					t.addMugimenduak(mugimendua);
+					d.addMugimenduak(mugimendua);
+					MainGUIt b = new MainGUIt(t);
+					b.setVisible(true);
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "You don't have enough money to pay", "Warning", JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		});
 		payTrip.setBounds(118, 227, 89, 23);
@@ -99,11 +126,11 @@ public class PaymentGUI extends JFrame {
 		contentPane.add(passwordField);
 
 
-		iraungi = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("PaymentGUI.Iraugitze"));
+		iraungi = new JLabel("");
 		iraungi.setBounds(10, 118, 86, 14);
 		contentPane.add(iraungi);
 
-		cVV = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("PaymentGUI.CVV"));
+		cVV = new JLabel("");
 		cVV.setBounds(354, 118, 33, 14);
 		contentPane.add(cVV);
 
@@ -113,6 +140,7 @@ public class PaymentGUI extends JFrame {
 				//MIRAR EL USUARIO ELIMINARLO DEL VIAJE Y VOLVER A SU PERFIL
 				MainGUIt a = new MainGUIt(t);
 				a.setVisible(true);
+				dispose();
 			}
 		});
 		cancelTrip.setBounds(241, 227, 89, 23);

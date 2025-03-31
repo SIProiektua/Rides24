@@ -9,7 +9,6 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
@@ -27,15 +26,19 @@ public class Ride implements Serializable {
 	private int nPlaces;
 	private Date date;
 	private float price;
-	private ArrayList<Traveler> travelerLista = new ArrayList<Traveler>();
-
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	private ArrayList<Book> erreserbaLista;
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private Driver driver;
+	@OneToOne(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	private Car car;
+	
 
 	public Ride(){
 		super();
 	}
 
-	public Ride(Integer rideNumber, String from, String to, Date date, int nPlaces, float price, Driver driver) {
+	public Ride(Integer rideNumber, String from, String to, Date date, int nPlaces, float price, Driver driver, Car car) {
 		super();
 		this.rideNumber = rideNumber;
 		this.from = from;
@@ -44,11 +47,13 @@ public class Ride implements Serializable {
 		this.date=date;
 		this.price=price;
 		this.driver = driver;
+		this.setCar(car);
+		erreserbaLista = new ArrayList<Book>();
 	}
 
 
 
-	public Ride(String from, String to,  Date date, int nPlaces, float price, Driver driver) {
+	public Ride(String from, String to,  Date date, int nPlaces, float price, Driver driver, Car car) {
 		super();
 		this.from = from;
 		this.to = to;
@@ -56,6 +61,8 @@ public class Ride implements Serializable {
 		this.date=date;
 		this.price=price;
 		this.driver = driver;
+		this.setCar(car);
+		erreserbaLista = new ArrayList<Book>();
 	}
 
 	/**
@@ -153,8 +160,12 @@ public class Ride implements Serializable {
 	 * @param  nPlaces places to be set
 	 */
 
-	public void setBetMinimum(int nPlaces) {
+	public void setAvailablePlaces(int nPlaces) {
 		this.nPlaces = nPlaces;
+	}
+	
+	public int getAvailablePlaces() {
+		return nPlaces;
 	}
 
 	/**
@@ -188,10 +199,30 @@ public class Ride implements Serializable {
 	public String toString(){
 		return rideNumber+";"+";"+from+";"+to+";"+date;
 	}
-	public void addTraveler(Traveler traveler){
-		if(nPlaces<=travelerLista.size()) travelerLista.add(traveler);
+	
+	public Car getCar() {
+		return car;
 	}
-	public void removeTraveler(Traveler traveler){
-		travelerLista.remove(traveler);
+
+	public void setCar(Car car) {
+		this.car = car;
+	}
+
+	public ArrayList<Book> getErreserbaLista() {
+		return erreserbaLista;
+	}
+
+	public void setErreserbaLista(ArrayList<Book> erreserbaLista) {
+		this.erreserbaLista = erreserbaLista;
+	}
+
+	public void removeBook(Book book) {
+		erreserbaLista.remove(book);
+		
+	}
+
+	public void addBook(Book b) {
+		erreserbaLista.add(b);
+		
 	}
 }

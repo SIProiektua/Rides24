@@ -9,21 +9,14 @@ import javax.xml.ws.Service;
 
 import configuration.ConfigXML;
 import dataAccess.DataAccess;
-import domain.Driver;
-import domain.Traveler;
 import businessLogic.BLFacade;
 import businessLogic.BLFacadeImplementation;
-import dataAccess.*;
 public class ApplicationLauncher {
 	public static DataAccess da;
+    private static BLFacade appFacadeInterface;
 
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
-		// try{
-		// 		Runtime.getRuntime().exec("Start Chrome");
-		// } catch(Exception e){
-		// 	    e.printStackTrace();
-		// }
-
 		ConfigXML c=ConfigXML.getInstance();
 
 		System.out.println(c.getLocale());
@@ -32,31 +25,22 @@ public class ApplicationLauncher {
 
 		System.out.println("Locale: "+Locale.getDefault());
 
-	    Driver driver=new Driver("driver3@gmail.com","Test Driver");
-
-		Traveler traveler = new Traveler("jonormae@hotmail.com", "Test Traveller");
-		traveler.setPassword("1234");
 		SelectGUI a = new SelectGUI();
 		a.setVisible(true);
 
 
 		try {
-
-			BLFacade appFacadeInterface;
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 
 			if (c.isBusinessLogicLocal()) {
 				da = new DataAccess();
 				appFacadeInterface=new BLFacadeImplementation(da);
-
-
 			}
 
 			else { //If remote
 
 				 String serviceName= "http://"+c.getBusinessLogicNode() +":"+ c.getBusinessLogicPort()+"/ws/"+c.getBusinessLogicName()+"?wsdl";
 
-				@SuppressWarnings("deprecation")
 				URL url = new URL(serviceName);
 
 
@@ -69,7 +53,7 @@ public class ApplicationLauncher {
 		         appFacadeInterface = service.getPort(BLFacade.class);
 			}
 
-			MainGUI.setBussinessLogic(appFacadeInterface);
+			//MainGUI.setBussinessLogic(appFacadeInterface);
 
 
 		}catch (Exception e) {
@@ -80,8 +64,15 @@ public class ApplicationLauncher {
 			System.out.println("Error in ApplicationLauncher: "+e.toString());
 		}
 		//a.pack();
+		
 
+	}
+	public static BLFacade getBusinessLogic(){
+		return appFacadeInterface;
+	}
 
+	public static void setBussinessLogic (BLFacade afi){
+		appFacadeInterface=afi;
 	}
 
 }

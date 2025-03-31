@@ -1,6 +1,8 @@
 package exceptions;
 
 public class EmptyImputException extends Exception {
+	private static final long serialVersionUID = 1L;
+
 	public EmptyImputException()
 	  {
 	    super();

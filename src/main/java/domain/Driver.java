@@ -1,5 +1,8 @@
 package domain;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,18 +11,27 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @Entity
 public class Driver extends User{
 	private static final long serialVersionUID = 1L;
-
+	private String na;
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	private ArrayList<Ride> rides;
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
+	private ArrayList<Car> cars;
+	
 	public Driver(String email, String name, String ID, String username, String password) {
 		super(email, name, ID, username, password);
+		cars = new ArrayList<Car>();
+		rides = new ArrayList<Ride>();
 	}
 	public Driver(String email, String name) {
 		super(email, name);
+		cars = new ArrayList<Car>();
+		rides = new ArrayList<Ride>();
 	}
 	public Driver() {
 		
     }
 	public String toString(){
-		return email+";"+name+rides;
+		return getEmail()+";"+name+ " " + cars;
 	}
 	
 
@@ -31,8 +43,8 @@ public class Driver extends User{
 	 * @return Bet
 	 */
 
-	public Ride addRide(String from, String to, Date date, int nPlaces, float price)  {
-        Ride ride=new Ride(from,to,date,nPlaces,price, this);
+	public Ride addRide(String from, String to, Date date, int nPlaces, float price, Car car)  {
+        Ride ride=new Ride(from,to,date,nPlaces,price, this, car);
         rides.add(ride);
         return ride;
 	}
@@ -52,10 +64,10 @@ public class Driver extends User{
 			return r;
 		} else return null;
 	}
-	public void RemoveTraveler(Ride ride, Traveler traveler){
+	public void RemoveTraveler(Ride ride, Book book){
 		try{
 			Ride bidaia = rides.get(rides.indexOf(ride));
-			bidaia.removeTraveler(traveler);
+			bidaia.removeBook(book);
 		}catch(Exception e){
 			System.out.println("ERROR DRIVER.JAVA");
 		}
@@ -70,15 +82,54 @@ public class Driver extends User{
 		if (getClass() != obj.getClass())
 			return false;
 		Driver other = (Driver) obj;
-		if (email != other.email)
+		if (getEmail() != other.getEmail())
 			return false;
 		return true;
 	}
 	public int compareTo(Driver drive) {
 		int i = 0;
-		if(drive.getName().equals(this.getName())&&drive.getEmail().equals(this.getEmail())&&(drive.getPassword().equals(this.getPassword()))&&drive.getUsername().equals(this.getUsername())&&this.getUsertype().equals(drive.getUsertype())) {
+		if(drive.getNa().equals(this.getNa())&&drive.getEmail().equals(this.getEmail())&&(drive.getPassword().equals(this.getPassword()))&&drive.getUsername().equals(this.getUsername())&&this.getClass().getSimpleName().equals(drive.getClass().getSimpleName())) {
 			i = 1;
 		}
 		return i;
+	}
+	public List<Car> getCars() {
+		return cars;
+	}
+	public void setCars(ArrayList<Car> cars) {
+		this.cars = cars;
+	}
+	public void addCar(Car car) {
+		cars.add(car);
+	}
+	public String getNa() {
+		return na;
+	}
+	public void setNa(String na) {
+		this.na = na;
+	}
+	public String getID() {
+		return ID;
+	}
+	public void setID(String iD) {
+		ID = iD;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

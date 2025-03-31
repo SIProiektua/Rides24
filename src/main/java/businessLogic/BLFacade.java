@@ -3,6 +3,7 @@ package businessLogic;
 import java.util.Date;
 import java.util.List;
 
+import domain.Car;
 //import domain.Booking;
 import domain.Ride;
 import exceptions.RideMustBeLaterThanTodayException;
@@ -47,7 +48,7 @@ public interface BLFacade  {
  	 * @throws RideAlreadyExistException if the same ride already exists for the driver
 	 */
    @WebMethod
-   public Ride createRide( String from, String to, Date date, int nPlaces, float price, String driverEmail) throws RideMustBeLaterThanTodayException, RideAlreadyExistException;
+   public Ride createRide( String from, String to, Date date, int nPlaces, float price, String driverEmail, Car car) throws RideMustBeLaterThanTodayException, RideAlreadyExistException;
 	
 	
 	/**
@@ -69,6 +70,12 @@ public interface BLFacade  {
 	 */
 	@WebMethod public List<Date> getThisMonthDatesWithRides(String from, String to, Date date);
 	
+
+	 /**
+	 * This method cancels a book
+	 * @param id id of the book
+	 */
+	@WebMethod public void cancelBook(int id);
 	/**
 	 * This method calls the data access to initialize the database with some events and questions.
 	 * It is invoked only when the option "initialize" is declared in the tag dataBaseOpenMode of resources/config.xml file

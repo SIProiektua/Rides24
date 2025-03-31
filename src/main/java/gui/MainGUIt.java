@@ -17,17 +17,20 @@ import javax.swing.SwingConstants;
 
 import businessLogic.BLFacade;
 import domain.Traveler;
+import domain.User;
 
+import java.awt.GridLayout;
+
+@SuppressWarnings("deprecation")
 public class MainGUIt extends JFrame {
 
 	private Traveler travel;
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	private JPanel jContentPane = null;
 	private JButton jButtonCreateQuery = null;
 	private JButton jButtonQueryQueries = null;
 	private JRadioButton rdbtnNewRadioButton = new JRadioButton("English");
-	private JRadioButton rdbtnNewRadioButton_1 =  new JRadioButton("Español");
+	private JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Español");
 	private JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("Euskera");
 	private JPanel panel;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
@@ -43,6 +46,7 @@ public class MainGUIt extends JFrame {
 	}
 
 	protected JLabel jLabelSelectOption;
+	private JButton btnBack;
 
 	public MainGUIt(Traveler t) {
 		super();
@@ -50,13 +54,11 @@ public class MainGUIt extends JFrame {
 		this.setSize(271, 295);
 		this.setSize(495, 290);
 		jLabelSelectOption = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.SelectOption"));
-		jLabelSelectOption.setBounds(0, 0, 450, 75);
 		jLabelSelectOption.setFont(new Font("Tahoma", Font.BOLD, 13));
 		jLabelSelectOption.setForeground(Color.BLACK);
 		jLabelSelectOption.setHorizontalAlignment(SwingConstants.CENTER);
 
 		jButtonCreateQuery = new JButton();
-		jButtonCreateQuery.setBounds(10, 72, 450, 75);
 		jButtonCreateQuery.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.BookRide"));
 		jButtonCreateQuery.addActionListener(new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -65,31 +67,16 @@ public class MainGUIt extends JFrame {
 				dispose();
 			}
 		});
-
-		jButtonQueryQueries = new JButton();
-		jButtonQueryQueries.setBounds(0, 144, 460, 75);
-		jButtonQueryQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.QueryRides"));
-		jButtonQueryQueries.addActionListener(new ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent e) {
-				FindRidesGUI b = new FindRidesGUI();
-				b.setVisible(true);
-				dispose();
-			}
-		});
 		jContentPane = new JPanel();
-		jContentPane.setLayout(null);
+		jContentPane.setLayout(new GridLayout(0, 1, 0, 0));
 		jContentPane.add(jLabelSelectOption);
 		jContentPane.add(jButtonCreateQuery);
-		jContentPane.add(jButtonQueryQueries);
-		setContentPane(jContentPane);
-		setTitle(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.MainTitle") + " - travel :"
-				+ travel.getName());
 
 		rdbtnNewRadioButton = new JRadioButton("English");
 		rdbtnNewRadioButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("en"));
-				System.out.println("Locale: "+Locale.getDefault());
+				System.out.println("Locale: " + Locale.getDefault());
 				paintAgain();
 			}
 		});
@@ -99,7 +86,7 @@ public class MainGUIt extends JFrame {
 		rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Locale.setDefault(new Locale("eus"));
-				System.out.println("Locale: "+Locale.getDefault());
+				System.out.println("Locale: " + Locale.getDefault());
 				paintAgain();
 			}
 		});
@@ -109,8 +96,30 @@ public class MainGUIt extends JFrame {
 		rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("es"));
-				System.out.println("Locale: "+Locale.getDefault());
+				System.out.println("Locale: " + Locale.getDefault());
 				paintAgain();
+			}
+		});
+
+		jButtonQueryQueries = new JButton();
+		jButtonQueryQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.QueryRides"));
+		jButtonQueryQueries.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				FindRidesGUI b = new FindRidesGUI((User) t, "MainGUIt");
+				b.setVisible(true);
+				dispose();
+			}
+		});
+		jContentPane.add(jButtonQueryQueries);
+
+		JButton jButtonManageBooks = new JButton();
+		jButtonManageBooks.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.ManageBooks"));
+		jContentPane.add(jButtonManageBooks);
+		jButtonManageBooks.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				BookManageGUI b = new BookManageGUI(travel);
+				b.setVisible(true);
+				dispose();
 			}
 		});
 		buttonGroup.add(rdbtnNewRadioButton_2);
@@ -119,13 +128,23 @@ public class MainGUIt extends JFrame {
 		panel.add(rdbtnNewRadioButton_1);
 		panel.add(rdbtnNewRadioButton_2);
 		panel.add(rdbtnNewRadioButton);
-		panel.setBounds(10, 201, 414, 49);
 		jContentPane.add(panel);
-
+		
+		btnBack = new JButton("Back"); //$NON-NLS-1$ //$NON-NLS-2$
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SelectGUI b = new SelectGUI();
+				b.setVisible(true);
+				dispose();
+			}
+		});
+		panel.add(btnBack);
 		setContentPane(jContentPane);
-		setTitle(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.MainTitle") + " - traveler :"+travel.getName());
+		setTitle(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.MainTitle") + " - travel :"
+				+ travel.getName());
 
 	}
+
 	private void paintAgain() {
 		jLabelSelectOption.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.SelectOption"));
 		jButtonCreateQuery.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.BookRide"));

@@ -14,19 +14,14 @@ import java.awt.event.ActionEvent;
 
 public class SelectGUI extends JFrame {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	//private static boolean b=true;
 	private JButton RegisterB;
 	private JButton LoginB;
 	private JButton queryButton;
 	private JRadioButton rdbtnNewRadioButton;
 	private JRadioButton rdbtnNewRadioButton_1;
 	private JRadioButton rdbtnNewRadioButton_2;
-	// private JPanel panel;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JPanel panel;
 	/**
@@ -84,7 +79,7 @@ public class SelectGUI extends JFrame {
 		queryButton.setText(ResourceBundle.getBundle("Etiquetas").getString("SelectGUI.QueryRides"));
 		queryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FindRidesGUI c = new FindRidesGUI();
+				FindRidesGUI c = new FindRidesGUI("SelectGUI");
 				c.setVisible(true);
 				dispose();
 			}
@@ -96,6 +91,7 @@ public class SelectGUI extends JFrame {
 
 		rdbtnNewRadioButton = new JRadioButton("English");
 		rdbtnNewRadioButton.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("en"));
 				System.out.println("Locale: "+Locale.getDefault());
@@ -106,6 +102,7 @@ public class SelectGUI extends JFrame {
 
 		rdbtnNewRadioButton_1 = new JRadioButton("Euskara");
 		rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
 				Locale.setDefault(new Locale("eus"));
 				System.out.println("Locale: "+Locale.getDefault());
@@ -116,6 +113,7 @@ public class SelectGUI extends JFrame {
 
 		rdbtnNewRadioButton_2 = new JRadioButton("Castellano");
 		rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("es"));
 				System.out.println("Locale: "+Locale.getDefault());
