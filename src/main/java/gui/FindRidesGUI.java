@@ -49,6 +49,7 @@ public class FindRidesGUI extends JFrame {
 	private JTable tableRides= new JTable();
 
 	private DefaultTableModel tableModelRides;
+	BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 
 	private String[] columnNamesRides = new String[] {
@@ -77,7 +78,7 @@ public class FindRidesGUI extends JFrame {
 				jButton2_actionPerformed(e);
 			}
 		});
-		BLFacade facade = ApplicationLauncher.getBusinessLogic();
+		
 		List<String> origins=facade.getDepartCities();
 
 		for(String location:origins) originLocations.addElement(location);
@@ -102,7 +103,6 @@ public class FindRidesGUI extends JFrame {
 		jComboBoxOrigin.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				destinationCities.removeAllElements();
-				BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 				List<String> aCities=facade.getDestinationCities((String)jComboBoxOrigin.getSelectedItem());
 				for(String aciti:aCities) {
@@ -122,7 +122,6 @@ public class FindRidesGUI extends JFrame {
 
 				paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,	new Color(210,228,238));
 
-				BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 				datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
 				paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
@@ -212,8 +211,8 @@ public class FindRidesGUI extends JFrame {
 	
 
 
-		JButton JRegisterBack = new JButton(Messages.getString("RegisterGUI.Back"));
-		JRegisterBack.addActionListener(new ActionListener() {
+		JButton JBack = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Back"));
+		JBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(s.equals("SelectGUI")){
 					b = new SelectGUI();
@@ -226,8 +225,8 @@ public class FindRidesGUI extends JFrame {
 				dispose();
 			}
 		});
-		JRegisterBack.setBounds(335, 421, 130, 30);
-		this.getContentPane().add(JRegisterBack);
+		JBack.setBounds(335, 421, 130, 30);
+		this.getContentPane().add(JBack);
 	}
 	
 	
@@ -236,7 +235,6 @@ public class FindRidesGUI extends JFrame {
 	 * @wbp.parser.constructor
 	 */
 	public FindRidesGUI(String string) {
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				this.getContentPane().setLayout(null);
 				this.setSize(new Dimension(700, 500));
 				this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("FindRidesGUI.FindRides"));
@@ -254,14 +252,13 @@ public class FindRidesGUI extends JFrame {
 						jButton2_actionPerformed(e);
 					}
 				});
-				BLFacade facade = ApplicationLauncher.getBusinessLogic();
 				List<String> origins=facade.getDepartCities();
 
 				for(String location:origins) originLocations.addElement(location);
 
 				jLabelOrigin.setBounds(new Rectangle(6, 56, 92, 20));
 				jLabelDestination.setBounds(6, 81, 73, 16);
-				getContentPane().add(jLabelOrigin);// kotxe bat gehitu (honek eragina izango du bidaia sortzerakoan)
+				getContentPane().add(jLabelOrigin);
 
 				getContentPane().add(jLabelDestination);
 
@@ -279,7 +276,7 @@ public class FindRidesGUI extends JFrame {
 				jComboBoxOrigin.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent e) {
 						destinationCities.removeAllElements();
-						BLFacade facade = ApplicationLauncher.getBusinessLogic();
+						
 
 						List<String> aCities=facade.getDestinationCities((String)jComboBoxOrigin.getSelectedItem());
 						for(String aciti:aCities) {
@@ -299,7 +296,6 @@ public class FindRidesGUI extends JFrame {
 
 						paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,	new Color(210,228,238));
 
-						BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 						datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
 						paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);

@@ -94,7 +94,6 @@ public class SelectGUI extends JFrame {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("en"));
-				System.out.println("Locale: "+Locale.getDefault());
 				paintAgain();
 			}
 		});
@@ -105,7 +104,6 @@ public class SelectGUI extends JFrame {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
 				Locale.setDefault(new Locale("eus"));
-				System.out.println("Locale: "+Locale.getDefault());
 				paintAgain();
 			}
 		});
@@ -116,7 +114,6 @@ public class SelectGUI extends JFrame {
 			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("es"));
-				System.out.println("Locale: "+Locale.getDefault());
 				paintAgain();
 			}
 		});

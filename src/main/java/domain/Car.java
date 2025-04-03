@@ -45,6 +45,6 @@ public class Car {
 
 	@Override
 	public String toString() {
-		return ("[" + "Number Plate: " +numberPlate + ", Insurance ID" + insuranceId + "]");
+    return numberPlate;
 	}
 }

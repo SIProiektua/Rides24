@@ -2,8 +2,6 @@ package dataAccess;
 
 import domain.User;
 import java.io.File;
-//import java.net.NoRouteToHostException;
-//import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,10 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Random;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
@@ -59,9 +57,6 @@ public class DataAccess {
 
 		System.out.println("DataAccess created => isDatabaseLocal: " + c.isDatabaseLocal() + " isDatabaseInitialized: "
 				+ c.isDatabaseInitialized());
-
-		//close();
-
 	}
 
 	public DataAccess(EntityManager db) {
@@ -104,13 +99,10 @@ public class DataAccess {
 			driver1.addRide("Donostia", "Bilbo", UtilDate.newDate(year, month, 15), 4, 7, null);
 			driver1.addRide("Donostia", "Gazteiz", UtilDate.newDate(year, month, 6), 4, 8, null);
 			driver1.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 25), 4, 4, null);
-
 			driver1.addRide("Donostia", "Iruña", UtilDate.newDate(year, month, 7), 4, 8, null);
-
 			driver2.addRide("Donostia", "Bilbo", UtilDate.newDate(year, month, 15), 3, 3, null);
 			driver2.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 25), 2, 5, null);
 			driver2.addRide("Eibar", "Gasteiz", UtilDate.newDate(year, month, 6), 2, 5, null);
-
 			driver3.addRide("Bilbo", "Donostia", UtilDate.newDate(year, month, 14), 1, 3, null);
 
 			db.merge(driver1);
@@ -138,247 +130,123 @@ public class DataAccess {
 			Driver d1 = new Driver(email, name, ID, username, pass);
 			u1 = (User) d1;
 		}
-		System.out.println("se guardará: " + u1.toString());
+		
 		db.merge(u1);
 		db.getTransaction().commit();
 	}
 
-	public void aCar(User r, Car c){
-		if(db.find(User.class, r)!=null){
-			Driver s = (Driver)db.find(User.class, r);
-			s.addCar(c);
-			db.merge(s);
-			db.getTransaction().commit();
-		}else{
-			System.out.println("THIS CAR ALREADY EXISTS!");
-		}
+	public boolean getUser(String u) {
+		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.name =:name", User.class);
+		query.setParameter("name", u);
+		List<User> results = query.getResultList();
+		return !results.isEmpty();
 	}
 
-	public void saveBooking(Book b, Traveler t) {
+	public void cancelRide(Ride r) {
+	    Ride ride = db.find(Ride.class, r.getRideNumber());
+	    ArrayList<Book> reservas = new ArrayList<Book>(ride.getErreserbaLista());
 	    db.getTransaction().begin();
-		List<Book> lbook =  t.getBookList();
-		if(!lbook.contains(b)){
-			lbook.add(b);
-		}
-	    db.merge(t);  
+	    for (Book b : reservas) {
+	        Traveler traveler = b.getTraveler();
+	        traveler.removeBook(b);
+	        db.merge(traveler);
+	        Iterator<Mugimendua> iterator = traveler.getMugimenduak().iterator();
+	        while (iterator.hasNext()) {
+	            Mugimendua mugimendua = iterator.next();
+	            if (mugimendua.getBook().equals(b)) {
+	                traveler.addBalance(mugimendua.getZenbat()); 
+	                ride.getDriver().addBalance(-mugimendua.getZenbat()); 
+	                db.merge(traveler);
+	                db.merge(ride.getDriver());
+		            iterator.remove(); 
+	            }
+	        }
+	    }
+	    ride.getDriver().removeRide(ride);
+	    db.merge(ride.getDriver()); 
+	    db.remove(ride); 
 	    db.getTransaction().commit();
 	}
 
-	public User getUserByPlate(String plate){
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r", User.class);
-		List<User> user = query.getResultList();
-		Iterator<User> it = user.iterator();
-		while(it.hasNext()){
-			User us = it.next();
-			if(us instanceof Driver){
-				Driver dr = (Driver) us;
-				List<Car> carlista = dr.getCars();
-				for(Car c: carlista){
-					if(c.getNumberPlate().equals(plate)){
-						return us;
+	public String cancelBook(int bookingId) {
+		db.getTransaction().begin(); // UNA SOLA TRANSACCIÓN AQUÍ
+		Book booking = db.find(Book.class, bookingId);
+		String msg = "Booking doesn't exist or couldn't be canceled.";
+
+		if (booking == null) {
+			db.getTransaction().rollback();
+			return msg;
+		}
+
+		try {
+			Ride ride = booking.getRide();
+			Traveler traveler = booking.getTraveler();
+			Driver driver = ride.getDriver();
+			if (ride != null) {
+				ride.setAvailablePlaces(ride.getAvailablePlaces() + booking.getSeats());
+				ride.getErreserbaLista().remove(booking);
+				driver.addBalance(-ride.getPrice());
+				db.merge(ride);
+			}
+			if (traveler != null) {
+				for(int i = 0; i<traveler.getMugimenduak().size(); i++) {
+					if(traveler.getMugimenduak().get(i).getBook().equals(booking)) {
+						traveler.removeMugimendua(traveler.getMugimenduak().get(i));
+						break;
 					}
 				}
+				for(int i = 0; i<driver.getMugimenduak().size(); i++) {
+					if(driver.getMugimenduak().get(i).getBook().equals(booking)) {
+						driver.removeMugimendua(driver.getMugimenduak().get(i));
+						break;
+					}
+				}
+				
+				traveler.getBookList().remove(booking);
+				traveler.addBalance(ride.getPrice());
+				db.merge(driver);
+				db.merge(traveler);
 			}
+			db.remove(booking);
+			db.getTransaction().commit();
+			msg = "Booking " + booking.toString() + " canceled successfully.";
+		} catch (Exception e) {
+			msg = "Error canceling booking: " + e.getMessage();
+			db.getTransaction().rollback();
 		}
-		return new User();
+		return msg;
 	}
 
-	public void paying(Driver d, Traveler t, Mugimendua m){
-		Mugimendua m1 = db.find(Mugimendua.class, m);
-		d.addBalance(m1.getZenbat());
-		t.addBalance(0 - m1.getZenbat());
-		db.merge(d);
-		db.merge(t);
+	public void updateRide(Ride r) {
+		db.getTransaction().begin();
+		r.setAvailablePlaces(r.getAvailablePlaces() - 1);
+		db.merge(r);
 		db.getTransaction().commit();
 	}
-
-	public String getUserType(String u) {
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.name = :name", User.class);
-		query.setParameter("name", u);
-		List<User> user = query.getResultList();
-		if (user.isEmpty()) {
-			System.out.println("FATAL ERROR UserType");
-		}
-		return user.get(0).getClass().getSimpleName();
-	}
-
-	public String getUserTypeByEmail(String u) {
-		 User u1 = db.find(User.class,u);
-		 System.out.println("Tipo de usuario: " + u1.getClass().getSimpleName());
-		  return u1.getClass().getSimpleName();
-	}
-	
-	
-	public boolean getUser(String u) {
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.name =:name",
-				User.class);
-		query.setParameter("name", u);
-		List<User> results = query.getResultList();
-		if (!results.isEmpty()) {
-			System.out.println("funca");
-			return true;
-		}
-		System.out.println(results.isEmpty());
-		return false;
-	}
-
-	public User getUser2(String u) {
-		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.name = :name", User.class);
-		query.setParameter("name", u);
-		List<User> results = query.getResultList();
-		if (!results.isEmpty()) {
-			System.out.println("ERROR");
-			return results.get(0);
-		}
-		return null;
-	}
-	
-	public String cancelRide(Ride r) {
-    	Ride f = db.find(Ride.class, r.getRideNumber());
-    	String s = "Ride couldn't be canceled because it doesn't exist.";
-    	if (f != null) {
-     	   db.getTransaction().begin();
-      	   try {
-            	List<Book> bookingList = new ArrayList<>(f.getErreserbaLista());
-            		for (Book b : bookingList) {
-             		   Traveler t = b.getTraveler();
-              			if (t != null) {
-               			    t.getBookList().remove(b);
-                 		    t.getRides().remove(f);
-                		    db.merge(t);
-               			}
-                		f.getErreserbaLista().remove(b);
-                		db.remove(b);
-            		}
-            	db.remove(f);
-            	db.getTransaction().commit();
-            	s = "Ride " + r.toString() + " canceled successfully.";
-        	} catch (Exception e) {
-            db.getTransaction().rollback();
-            s = "Ride couldn't be canceled due to an internal error: " + e.getMessage();
-       	 	}
-    	}
-    	return s;
-	}
-
-	public boolean hasEnoughBalance(Traveler t, float i){
-		return i<db.find(Traveler.class, t).getBalance();
-	}
-
-	public void addBalance(Traveler t, float i) {
-    	db.getTransaction().begin();
-    		try {
-        		Traveler found = db.find(Traveler.class, t.getEmail());
-        		if (found != null) {
-            		found.setBalance(found.getBalance() + i); // Sumamos al balance actual
-            		db.merge(found); // Actualizamos en la base de datos
-            		db.getTransaction().commit();
-        		} else {
-            		db.getTransaction().rollback();
-            		System.out.println("Traveler not found.");
-        		}
-    		} catch (Exception e) {
-        		db.getTransaction().rollback();
-        		System.out.println("Error while adding balance: " + e.getMessage());
-    		}
-	}
-
-	public List<Ride> bueltatuBukatutakoRideak(){
-		//TypedQuery<Ride> query = db.createQuery("SELECT DISTINCT r FROM Ride r", Ride.class);
-		//List<Ride> lride = query.getResultList();
-		//List<Ride> lrideend = new ArrayList<Ride>();
-//		for(Ride r: lride){
-			//if(r.getDate().equals())
-//		}
-		return null;
-	}
-
-
-	public List<Mugimendua> getMovements(String id, String bookcode){
-		Book b = db.find(Book.class,bookcode);
-		return b.getMugimenduak();
-	}
-	 
-	public String cancelBooking(int bookingId) {
-    		Book booking = db.find(Book.class, bookingId);
-    		String msg = "Booking doesn't exist or couldn't be canceled.";
-
-    		if (booking == null) return msg;
-
-    		db.getTransaction().begin();
-    		try {
-    			Ride ride = booking.getRide();
-    			Traveler traveler = booking.getTraveler();
-     				if (ride != null) {
-    	 		       ride.setAvailablePlaces(ride.getAvailablePlaces() + booking.getSeats());
-      	    	       ride.getErreserbaLista().remove(booking);
-        		       db.merge(ride);
-        			}
-        			if (traveler != null) {
-            			traveler.getBookList().remove(booking);
-            			db.merge(traveler);
-        			}
-        		db.remove(booking);
-        		db.getTransaction().commit();
-        		msg = "Booking " + booking.toString() + " canceled successfully.";
-    		} catch (Exception e) {
-    		    db.getTransaction().rollback();
-    		    msg = "Error canceling booking: " + e.getMessage();
-    		}
-    	return msg;
-	}
-
-
 
 	public User getUserByEmail(String u) {
 		TypedQuery<User> query = db.createQuery("SELECT DISTINCT r FROM User r WHERE r.email = :email", User.class);
 		query.setParameter("email", u);
 		List<User> results = query.getResultList();
 		if (!results.isEmpty()) {
-			System.out.println("ERROR");
 			return results.get(0);
 		}
 		return null;
 	}
 
-	public Traveler getTravelerByEmail(String email) {
-	    try {
-	        return (Traveler) db.find(User.class, email);
-	    } catch (Exception e) {
-	        System.out.println("Error en getUserByEmail: " + e.getMessage());
-	        return null;
-	    }
-	}
-
-	public Driver getDriverByEmail(String email) {
-	    try {
-	        return (Driver) db.find(User.class, email);
-	    } catch (Exception e) {
-	        System.out.println("Error en getUserByEmail: " + e.getMessage());
-	        return null;
-	    }
-	}
-
 
 	public boolean getPass(String email, String password) {
-	    try {
-	        User user = db.find(User.class, email);
-	        System.out.println(email);
-	        System.out.println("User: " + user.toString());
-	        String s = new String(user.getPassword());
-	        System.out.println("User Password: " + s);
-	        System.out.println("Password: " + password);
-	        System.out.println(user.isEmpty());
-	        System.out.println(user.getPassword().equals(password));
-	        if (s.equals(password)) {
-	            return true;
-	        }
-	    } catch (Exception e) {
-	       e.printStackTrace();
-	    }
-	    return false;
+		try {
+			User user = db.find(User.class, email);
+			String s = new String(user.getPassword());
+			if (s.equals(password)) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
-
 
 	/**
 	 * This method returns all the cities where rides depart
@@ -456,15 +324,6 @@ public class DataAccess {
 
 	}
 
-	public String isBooked(String bookId){
-		Book b = db.find(Book.class, bookId);
-		if(b!=null){
-			return b.getEgoera();
-		}
-		return "ERROREA";
-	}
-
-
 
 	/**
 	 * This method retrieves the rides from two locations on a given date
@@ -475,73 +334,27 @@ public class DataAccess {
 	 * @return collection of rides
 	 */
 	public List<Ride> getRides(String from, String to, Date date) {
-		System.out.println(">> DataAccess: getRides=> from= " + from + " to= " + to + " date " + date);
-
-		List<Ride> res = new ArrayList<>();
 		TypedQuery<Ride> query = db.createQuery("SELECT r FROM Ride r WHERE r.from=?1 AND r.to=?2 AND r.date=?3",
 				Ride.class);
 		query.setParameter(1, from);
 		query.setParameter(2, to);
 		query.setParameter(3, date);
 		List<Ride> rides = query.getResultList();
-		for (Ride ride : rides) {
-			res.add(ride);
-		}
-		return res;
-	}
-
-	public void updateRides(Book b, Ride r) {
-		String s1 = r.getFrom();
-		String s2 = r.getTo();
-		Date s3 = r.getDate();
-		int j = -1;
-		List<Ride> oldRide = getRides(s1, s2, s3);
-		System.out.println("There are " + oldRide.size() + " rides");
-		for (int i = 0; i < oldRide.size(); i++) {
-			if (oldRide.get(i).getRideNumber() == r.getRideNumber()) {
-				j = i;
-				break;
-			}
-		}
-		if (j > -1) {
-			Ride oldR = oldRide.get(j);
-			oldR.addBook(b);
-			if (oldR.getnPlaces() > 0) {
-				oldR.setAvailablePlaces((int) oldR.getnPlaces() - 1);
-			} else {
-				System.out.println("ERROR NOT FOUND SEATS");
-			}
-		}
-	}
-
-	public void bookRides(Book b, Ride r) throws Exception {
-		if (r.getnPlaces() > 1.00) {
-			updateRides(b, r);
-			System.out.print(b.getId() + "You have booked " + r.getDriver() + " 's travel from" + r.getFrom() + " to "
-					+ r.getTo());
-		} else {
-			throw new Exception();
-		}
+		return rides;
 	}
 
 	public Ride findRides(String drive, String from, String to, Date date, int nPlaces, float price) {
-		Ride f = new Ride();
-		if (getUserType(drive).equals("Driver")) {
-			//User n = getUser2(drive);
-			List<Ride> res = new ArrayList<>();
-			res = getRides(from, to, date);
-			for (Ride r : res) {
-				
-				if (r.getDriver().getName().equals(drive) && r.getFrom().equals(from) && price == r.getPrice()
-						&& r.getTo().equals(to)) {
-					f = r;
-
-				}
+		List<Ride> res = new ArrayList<Ride>();
+		res = getRides(from, to, date);
+		for (Ride r : res) {
+			if (r.getDriver().getName().equals(drive) && r.getFrom().equals(from) && price == r.getPrice()
+					&& r.getTo().equals(to)) {
+				return r;
 			}
 		}
-		return f;
+		return null;
 	}
-	
+
 	/**
 	 * This method retrieves from the database the dates a month for which there are
 	 * events
@@ -553,7 +366,7 @@ public class DataAccess {
 	 */
 	public List<Date> getThisMonthDatesWithRides(String from, String to, Date date) {
 		System.out.println(">> DataAccess: getEventsMonth");
-		List<Date> res = new ArrayList<>();
+		List<Date> res = new ArrayList<Date>();
 
 		Date firstDayMonthDate = UtilDate.firstDayMonth(date);
 		Date lastDayMonthDate = UtilDate.lastDayMonth(date);
@@ -574,7 +387,6 @@ public class DataAccess {
 	}
 
 	public void open() {
-
 		String fileName = c.getDbFilename();
 		if (c.isDatabaseLocal()) {
 			emf = Persistence.createEntityManagerFactory("objectdb:" + fileName);
@@ -588,26 +400,18 @@ public class DataAccess {
 					"objectdb://" + c.getDatabaseNode() + ":" + c.getDatabasePort() + "/" + fileName, properties);
 			db = emf.createEntityManager();
 		}
-		System.out.println("DataAccess opened => isDatabaseLocal: " + c.isDatabaseLocal());
-
 	}
-
+	
 	public void close() {
 		db.close();
 		System.out.println("DataAcess closed");
 	}
 
-	public static String generateRandomString(int longitud) {
-        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder resultado = new StringBuilder();
-        Random random = new Random();
-
-        for (int i = 0; i < longitud; i++) {
-            int indice = random.nextInt(caracteres.length());
-            resultado.append(caracteres.charAt(indice));
-        }
-
-        return resultado.toString();
-    }
-
+	public Ride getRideFromId(int id) {
+		try {
+			return db.find(Ride.class, id);
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
 }

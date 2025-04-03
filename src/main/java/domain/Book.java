@@ -1,14 +1,10 @@
 package domain;
 
-
-import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Book {
@@ -21,17 +17,13 @@ public class Book {
 	private Traveler traveler;
 	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private Ride ride;
-	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
-	private List<Mugimendua> mugimenduak;
 	public Book(int seats, String status) {
 		setSeats(seats);
 		setEgoera(status);
 		nid++;
 		bookId = nid;
 	}
-	public List<Mugimendua> getMugimenduak(){
-		return mugimenduak;
-	}
+	
 	public int getId() {
 		return bookId;
 	}
@@ -62,5 +54,16 @@ public class Book {
 	@Override
 	public String toString(){
 		return("ID = " + bookId + ". Seats = " + seats + ride.toString());
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Book other = (Book) obj;
+		return bookId == other.bookId;
 	}
 }

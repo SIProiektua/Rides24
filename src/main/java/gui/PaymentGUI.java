@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import businessLogic.BLFacade;
 import domain.Book;
 import domain.Driver;
 import domain.Mugimendua;
@@ -18,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JTextField;
-import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -26,17 +26,14 @@ public class PaymentGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JPasswordField passwordField;
+	private JTextArea textField;
 	private JTextArea prezioFinala;
 	private JLabel kopurua;
 	private JButton payTrip;
-	private JLabel tZbkia;
 	private JLabel iraungi;
 	private JLabel cVV;
 	private JButton cancelTrip;
-
+	private BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 	/**
 	 * Launch the application.
@@ -79,14 +76,17 @@ public class PaymentGUI extends JFrame {
 		payTrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Driver d = r.getDriver();
-				if(true/*t.getBalance()>r.getPrice()*/){
+				if(t.getBalance()>=r.getPrice()&&r.getAvailablePlaces()>0){
 					t.setBalance(t.getBalance()-r.getPrice());
 					d.setBalance(d.getBalance()+r.getPrice());
+
 					//Create Book
 					Book book = new Book(1,"CORRECT");
+					book.setSeats(book.getSeats()-1);
 					book.setRide(r);
 					book.setTraveler(t);
 					t.addBook(book);
+					r.addBook(book);
 
 					//Create movement
 					Mugimendua mugimendua = new Mugimendua();
@@ -99,32 +99,22 @@ public class PaymentGUI extends JFrame {
 					MainGUIt b = new MainGUIt(t);
 					b.setVisible(true);
 					dispose();
+					facade.updateRide(r);
 				} else {
-					JOptionPane.showMessageDialog(null, "You don't have enough money to pay", "Warning", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("Etiquetas").getString("PaymentGUI.PayError"), "Warning", JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 		});
 		payTrip.setBounds(118, 227, 89, 23);
 		contentPane.add(payTrip);
 
-		textField = new JTextField();
-		textField.setBounds(10, 74, 414, 20);
+		textField = new JTextArea();
+		textField.setEditable(false);
+		textField.setBounds(10, 74, 414, 102);
 		contentPane.add(textField);
 		textField.setColumns(10);
-
-		tZbkia = new JLabel("");
-		tZbkia.setBounds(174, 49, 90, 14);
-		contentPane.add(tZbkia);
-
-		textField_1 = new JTextField();
-		textField_1.setBounds(10, 143, 86, 20);
-		contentPane.add(textField_1);
-		textField_1.setColumns(10);
-
-		passwordField = new JPasswordField();
-		passwordField.setBounds(325, 143, 99, 20);
-		contentPane.add(passwordField);
-
+		textField.setText("Nondik:" + r.getFrom() + "   Nora:" + r.getTo() + "   Gidaria:" + r.getDriver().getName() +
+				"\nData:" + r.getDate().toString() + "   Prezioa: " + r.getPrice() );
 
 		iraungi = new JLabel("");
 		iraungi.setBounds(10, 118, 86, 14);

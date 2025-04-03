@@ -4,21 +4,20 @@ package gui;
 import java.awt.EventQueue;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
 import java.awt.event.ActionEvent;
-import java.awt.event.*;
 import domain.*;
-import businessLogic.*;
 
 public class MoneyManageGUIt extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private Mugimendua selectedMugimendua;
-	private BLFacade facade = ApplicationLauncher.getBusinessLogic();
 	private MainGUIt b;
+	private DefaultTableModel tableModel;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -38,54 +37,24 @@ public class MoneyManageGUIt extends JFrame {
 
 	public MoneyManageGUIt(Traveler t) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 169);
+		setBounds(100, 100, 450, 283);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		contentPane.setLayout(null);	
 
-		JComboBox<Mugimendua> moneyComboBox = new JComboBox<Mugimendua>();
-		moneyComboBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
+		 String[] columnNames = {ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUIt.ID"), ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUIt.Participant"), ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUIt.Balance")};
+			tableModel = new DefaultTableModel(columnNames, 0);
+			for (int i = 0; i < t.getMugimenduak().size(); i++) {
+				Mugimendua mugimendua = t.getMugimenduak().get(i);
+	            tableModel.addRow(new Object[]{mugimendua.getBook().getId(), mugimendua.getNondik().getName(), "-" + mugimendua.getZenbat()});
+	        }
+			table = new JTable(tableModel);
+			table.setBounds(41, 31, 367, 157);
+			contentPane.add(table);
 
-				Book book = (Book) moneyComboBox.getSelectedItem();
-				int id = book.getId();
-
-				// Search in travelers' booklist the id we got.
-//				for (int j = 0; j < driver.getMugimenduak().size(); j++) {
-//					if (driver.getMugimenduak().get(j).getId() == id) {
-//						selectedMugimendua = driver.getMugimenduak().get(j);
-//					}
-//				}
-			}	
-		});
-		DefaultComboBoxModel<Mugimendua> mugiemenduaInfo = new DefaultComboBoxModel<Mugimendua>();
-		for (int i = 0; i < t.getMugimenduak().size(); i++) {
-			mugiemenduaInfo.addElement(t.getMugimenduak().get(i));
-		}
-		moneyComboBox.setModel(mugiemenduaInfo);
-		moneyComboBox.setBounds(34, 10, 372, 53);
-		contentPane.add(moneyComboBox);
-		
-		JButton addMoney = new JButton("Add money");
-		addMoney.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int mQuant =  Integer.parseInt(JOptionPane.showInputDialog(ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUIt.AddMoney")));
-					t.setBalance(t.getBalance() + mQuant);
-				}catch(Exception err) {
-					JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUIt.AddMoney"), "Warning", JOptionPane.INFORMATION_MESSAGE);return;
-					
-				}
-				
-			}
-		});
-		
-		addMoney.setBounds(34, 75, 180, 27);
-		contentPane.add(addMoney);
-
-		JButton backButton = new JButton(Messages.getString("RegisterGUI.Back"));
+		JButton backButton = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Back"));
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				b = new MainGUIt(t);
@@ -93,7 +62,33 @@ public class MoneyManageGUIt extends JFrame {
 				dispose();
 			}
 		});
-		backButton.setBounds(226, 77, 187, 23);
+		backButton.setBounds(219, 207, 187, 23);
 		contentPane.add(backButton);
+		
+		JLabel lblCurrentIncome = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUI.Income")+": "); //$NON-NLS-1$ 
+		lblCurrentIncome.setBounds(41, 0, 127, 17);
+		contentPane.add(lblCurrentIncome);
+		
+		JLabel lblCurrentIncome_1 = new JLabel(t.getBalance()+""); //$NON-NLS-1$
+		lblCurrentIncome_1.setBounds(167, 2, 127, 17);
+		contentPane.add(lblCurrentIncome_1);
+		
+		JButton addMoney = new JButton(ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUIt.OutMoney1"));
+		addMoney.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int mQuant =  Integer.parseInt(JOptionPane.showInputDialog(ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUIt.AddMoney")));
+					t.setBalance(t.getBalance() + mQuant);
+				}catch(Exception err) {
+					JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("Etiquetas").getString("MoneyManagementGUIt.AddMoneyError"), "Warning", JOptionPane.INFORMATION_MESSAGE);return;
+					
+				}
+				lblCurrentIncome_1.setText(t.getBalance() + "");
+			}
+		});
+		addMoney.setBounds(32, 207, 175, 23);
+		contentPane.add(addMoney);
+		
+		
 	}
 }

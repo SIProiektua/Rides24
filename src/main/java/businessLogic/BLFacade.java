@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import domain.Car;
-//import domain.Booking;
 import domain.Ride;
+import domain.User;
 import exceptions.RideMustBeLaterThanTodayException;
 import exceptions.RideAlreadyExistException;
 
@@ -82,5 +82,16 @@ public interface BLFacade  {
 	 */	
 	@WebMethod public void initializeBD();
 
+	public void updateRide(Ride r);
+
+	public boolean getPass(String text, String s1);
+
+	public void createUser(boolean b, String string, String text, String s, String text2, String text3);
+
+	public void cancelRide(Ride r);
+
+	public User getUserByEmail(String email);
+
+	public Ride getRideFromId(int id);
 	
 }

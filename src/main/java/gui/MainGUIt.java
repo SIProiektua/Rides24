@@ -11,11 +11,11 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-import businessLogic.BLFacade;
 import domain.Traveler;
 import domain.User;
 
@@ -33,17 +33,9 @@ public class MainGUIt extends JFrame {
 	private JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Español");
 	private JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("Euskera");
 	private JPanel panel;
+	private JButton jButtonManageBooks;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-
-	private static BLFacade appFacadeInterface;
-
-	public static BLFacade getBusinessLogic() {
-		return appFacadeInterface;
-	}
-
-	public static void setBussinessLogic(BLFacade afi) {
-		appFacadeInterface = afi;
-	}
+	private JButton jButtonMovements = new JButton();
 
 	protected JLabel jLabelSelectOption;
 	private JButton btnBack;
@@ -76,7 +68,6 @@ public class MainGUIt extends JFrame {
 		rdbtnNewRadioButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("en"));
-				System.out.println("Locale: " + Locale.getDefault());
 				paintAgain();
 			}
 		});
@@ -86,7 +77,6 @@ public class MainGUIt extends JFrame {
 		rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Locale.setDefault(new Locale("eus"));
-				System.out.println("Locale: " + Locale.getDefault());
 				paintAgain();
 			}
 		});
@@ -96,7 +86,6 @@ public class MainGUIt extends JFrame {
 		rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Locale.setDefault(new Locale("es"));
-				System.out.println("Locale: " + Locale.getDefault());
 				paintAgain();
 			}
 		});
@@ -112,16 +101,33 @@ public class MainGUIt extends JFrame {
 		});
 		jContentPane.add(jButtonQueryQueries);
 
-		JButton jButtonManageBooks = new JButton();
+		jButtonManageBooks = new JButton();
 		jButtonManageBooks.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.ManageBooks"));
 		jContentPane.add(jButtonManageBooks);
 		jButtonManageBooks.addActionListener(new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				BookManageGUI b = new BookManageGUI(travel);
+				if (!travel.getBookList().isEmpty()) {
+					BookManageGUI b = new BookManageGUI(travel);
+					b.setVisible(true);
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(null,
+							ResourceBundle.getBundle("Etiquetas").getString("BookManageGUI.BookError"), "Warning",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+
+		jButtonMovements.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MoneyManageGUIt b = new MoneyManageGUIt(t);
 				b.setVisible(true);
 				dispose();
 			}
 		});
+		jButtonMovements.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.Movements"));
+
+		jContentPane.add(jButtonMovements);
 		buttonGroup.add(rdbtnNewRadioButton_2);
 
 		panel = new JPanel();
@@ -129,8 +135,8 @@ public class MainGUIt extends JFrame {
 		panel.add(rdbtnNewRadioButton_2);
 		panel.add(rdbtnNewRadioButton);
 		jContentPane.add(panel);
-		
-		btnBack = new JButton("Back"); //$NON-NLS-1$ //$NON-NLS-2$
+
+		btnBack = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Back")); //$NON-NLS-1$ //$NON-NLS-2$
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SelectGUI b = new SelectGUI();
@@ -149,5 +155,7 @@ public class MainGUIt extends JFrame {
 		jLabelSelectOption.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.SelectOption"));
 		jButtonCreateQuery.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.BookRide"));
 		jButtonQueryQueries.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.QueryRides"));
+		jButtonManageBooks.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUIt.ManageBooks"));
+		jButtonMovements.setText(ResourceBundle.getBundle("Etiquetas").getString("MainGUI.Movements"));
 	}
 }

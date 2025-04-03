@@ -88,7 +88,6 @@ public class AddCarGUI extends JFrame {
 					Car car = new Car(plateInput.getText().trim(),licenceInput.getText());
 					if(!driver.getCars().contains(car)) {
 						driver.addCar(car);
-						System.out.println("Kotxea= "+ car.toString());
 					}
 					
 				} catch (Exception exc) {
@@ -99,7 +98,7 @@ public class AddCarGUI extends JFrame {
 		btnAddCar.setBounds(39, 117, 106, 27);
 		contentPane.add(btnAddCar);
 		
-		JButton btnBack = new JButton("Back");
+		JButton btnBack = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Back"));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				b = new MainGUI(driver);

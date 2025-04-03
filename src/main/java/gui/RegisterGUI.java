@@ -1,7 +1,5 @@
 package gui;
 
-
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -10,11 +8,14 @@ import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.*;
+import businessLogic.*;
 
 public class RegisterGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -22,12 +23,13 @@ public class RegisterGUI extends JFrame {
 	private JTextField userName;
 	private JTextField email;
 	private JPasswordField passwordField;
-	private Boolean state = false;
+	private Boolean isTraveler = false;
 	private SelectGUI b;
 	private JButton JRegisterB;
 	private JTextField NA;
 	private JTextField Name;
 	private JLabel lblNewLabel_4;
+	private BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 	/**
 	 * Create the frame.
@@ -38,8 +40,8 @@ public class RegisterGUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		JRadioButton rdbtnDriver = new JRadioButton(Messages.getString("RegisterGUI.1")); 
-		JRadioButton rdbtnTraveler = new JRadioButton(Messages.getString("RegisterGUI.2")); 
+		JRadioButton rdbtnDriver = new JRadioButton(Messages.getString("RegisterGUI.1"));
+		JRadioButton rdbtnTraveler = new JRadioButton(Messages.getString("RegisterGUI.2"));
 
 		userName = new JTextField();
 		userName.setBounds(189, 21, 213, 20);
@@ -59,7 +61,7 @@ public class RegisterGUI extends JFrame {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					rdbtnDriver.hide();
-					state = true;
+					isTraveler = true;
 				} else if (e.getStateChange() == ItemEvent.DESELECTED) {
 					rdbtnDriver.show();
 				}
@@ -73,7 +75,7 @@ public class RegisterGUI extends JFrame {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					rdbtnTraveler.hide();
-					state = false;
+					isTraveler = false;
 				} else if (e.getStateChange() == ItemEvent.DESELECTED) {
 					rdbtnTraveler.show();
 				}
@@ -84,24 +86,20 @@ public class RegisterGUI extends JFrame {
 		JRegisterB = new JButton(ResourceBundle.getBundle("Etiquetas").getString("RegisterGUI.RegisterB")); //$NON-NLS-1$
 		JRegisterB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(state);
-				b = new SelectGUI();
-				if (state == true) {
-					String s = new String(passwordField.getPassword());
-					ApplicationLauncher.da.createUser(true, NA.getText().toString(), Name.getText(),
-							s, userName.getText(), email.getText());
-					b.setVisible(true);
-					dispose();
-				} else {
-					String d = new String(passwordField.getPassword());
-					ApplicationLauncher.da.createUser(false, NA.getText().toString(), Name.getText(),
-							d, userName.getText(), email.getText());
-					b.setVisible(true);
-					dispose();
+				if (facade.getUserByEmail(email.getText()) != null) {
+					JOptionPane.showMessageDialog(null, "User email is taken", "Warning",
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
 				}
+				b = new SelectGUI();
+
+				String s = new String(passwordField.getPassword());
+				facade.createUser(isTraveler, NA.getText().toString(), Name.getText(), s, userName.getText(),
+						email.getText());
+				b.setVisible(true);
+				dispose();
 			}
 		});
-		// a.pack();
 		JRegisterB.setBounds(39, 227, 187, 23);
 		contentPane.add(JRegisterB);
 
@@ -120,7 +118,6 @@ public class RegisterGUI extends JFrame {
 		JLabel lblNewLabel_3 = new JLabel(Messages.getString("RegisterGUI.lblNewLabel_3.text")); //$NON-NLS-1$
 		lblNewLabel_3.setBounds(35, 119, 24, 14);
 		contentPane.add(lblNewLabel_3);
-
 		NA = new JTextField();
 		NA.setColumns(10);
 		NA.setBounds(189, 116, 213, 20);
@@ -134,7 +131,7 @@ public class RegisterGUI extends JFrame {
 		lblNewLabel_4 = new JLabel(Messages.getString("RegisterGUI.lblNewLabel_4.text")); //$NON-NLS-1$
 		lblNewLabel_4.setBounds(35, 145, 61, 20);
 		contentPane.add(lblNewLabel_4);
-		
+
 		JButton JRegisterBack = new JButton(Messages.getString("RegisterGUI.Back"));
 		JRegisterBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

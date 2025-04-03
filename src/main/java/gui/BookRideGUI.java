@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-//import java.awt.event.WindowAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -25,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -43,14 +43,13 @@ public class BookRideGUI extends JFrame {
 
 	private JComboBox<String> jComboBoxOrigin = new JComboBox<String>();
 	DefaultComboBoxModel<String> originLocations = new DefaultComboBoxModel<String>();
-	//private JButton jButtonClose = new JButton(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.Close"));
 	private JComboBox<String> jComboBoxDestination = new JComboBox<String>();
 	DefaultComboBoxModel<String> destinationCities = new DefaultComboBoxModel<String>();
 
 	private JLabel jLabelOrigin = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.LeavingFrom"));
 	private JLabel jLabelDestination = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.GoingTo"));
 	private final JLabel jLabelEventDate = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.RideDate"));
-	private final JLabel jLabelEvents = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.Rides")); 
+	private final JLabel jLabelEvents = new JLabel(ResourceBundle.getBundle("Etiquetas").getString("CreateRideGUI.Rides"));
 
 	private JButton jPayTravel = new JButton(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Payment"));
 
@@ -65,19 +64,18 @@ public class BookRideGUI extends JFrame {
 
 	private JTable tableRides= new JTable();
 	private DefaultTableModel tableModelRides;
+	private BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 
 	private String[] columnNamesRides = new String[] {
-			ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Driver"), 
-			ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.NPlaces"), 
+			ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Driver"),
+			ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.NPlaces"),
 			ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Price")
 	};
-	
 
 
-	public BookRideGUI(Traveler t)
-	{
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+	public BookRideGUI(Traveler t){
 		this.getContentPane().setLayout(null);
 		this.setSize(new Dimension(700, 500));
 		this.setTitle(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.FindRides"));
@@ -107,27 +105,30 @@ public class BookRideGUI extends JFrame {
 					System.out.println("Indice de fila fuera de rango.");
 				}
 				if (!filaTexto.isEmpty()) {
-					r = ApplicationLauncher.da.findRides(filaTexto.get(0), salida, llegada, data,
-							(int) Float.parseFloat(filaTexto.get(1)), Float.parseFloat(filaTexto.get(2)));
+					r = facade.getRides( salida, llegada, data).get(0);
 				} else {
-					System.out.println("ERROR Gravisimo en bookRideGUI, Requiere intervencion manual");
+					System.out.println("Errorea gertatu da erreserba egitean");
 				}
 				if (r != null) {
+					if(r.getnPlaces() <= -1&&t.getBalance()<r.getPrice()) {
+						JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.NoPlaces"), "Warning", JOptionPane.INFORMATION_MESSAGE);
+					}else {
+						PaymentGUI d = new PaymentGUI(t, r);
+						d.setVisible(true);
+						dispose();
+					}
 					System.out.println("a bookRide llega esta persona" + r.toString());
-					PaymentGUI d = new PaymentGUI(t, r);
-					d.setVisible(true);
 				} else {
-					System.out.println("ERROR HAS HAPPENED");
+					JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.PayError"), "Warning", JOptionPane.INFORMATION_MESSAGE);
 				}
-				jButton2_actionPerformed(e);
+
 			}
 		});
 
-		BLFacade facade = ApplicationLauncher.getBusinessLogic();
 		List<String> origins=facade.getDepartCities();
-		
+
 		for(String location:origins) originLocations.addElement(location);
-		
+
 		jLabelOrigin.setBounds(new Rectangle(6, 56, 92, 20));
 		jLabelDestination.setBounds(6, 81, 85, 16);
 		getContentPane().add(jLabelOrigin);
@@ -136,17 +137,16 @@ public class BookRideGUI extends JFrame {
 
 		jComboBoxOrigin.setModel(originLocations);
 		jComboBoxOrigin.setBounds(new Rectangle(103, 50, 172, 20));
-		
+
 
 		List<String> aCities=facade.getDestinationCities((String)jComboBoxOrigin.getSelectedItem());
 		for(String aciti:aCities) {
 			destinationCities.addElement(aciti);
 		}
-		
+
 		jComboBoxOrigin.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				destinationCities.removeAllElements();
-				BLFacade facade = ApplicationLauncher.getBusinessLogic();
 
 				List<String> aCities=facade.getDestinationCities((String)jComboBoxOrigin.getSelectedItem());
 				for(String aciti:aCities) {
@@ -155,7 +155,7 @@ public class BookRideGUI extends JFrame {
 				tableModelRides.getDataVector().removeAllElements();
 				tableModelRides.fireTableDataChanged();
 
-				
+
 			}
 		});
 
@@ -198,9 +198,9 @@ public class BookRideGUI extends JFrame {
 				{
 					calendarAnt = (Calendar) propertychangeevent.getOldValue();
 					calendarAct = (Calendar) propertychangeevent.getNewValue();
-					
 
-					
+
+
 					DateFormat dateformat1 = DateFormat.getDateInstance(1, jCalendar1.getLocale());
 
 					int monthAnt = calendarAnt.get(Calendar.MONTH);
@@ -217,14 +217,13 @@ public class BookRideGUI extends JFrame {
 						jCalendar1.setCalendar(calendarAct);
 
 					}
-					
+
 					try {
 						tableModelRides.setDataVector(null, columnNamesRides);
 						tableModelRides.setColumnCount(4); // another column added to allocate ride objects
 
-						BLFacade facade = ApplicationLauncher.getBusinessLogic();
 						List<domain.Ride> rides=facade.getRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),UtilDate.trim(jCalendar1.getDate()));
-
+						//
 						if (rides.isEmpty() ) jLabelEvents.setText(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.NoRides")+ ": "+dateformat1.format(calendarAct.getTime()));
 						else jLabelEvents.setText(ResourceBundle.getBundle("Etiquetas").getString("BookRideGUI.Rides")+ ": "+dateformat1.format(calendarAct.getTime()));
 						for (domain.Ride ride:rides){
@@ -232,8 +231,8 @@ public class BookRideGUI extends JFrame {
 							row.add(ride.getDriver().getName());
 							row.add(ride.getnPlaces());
 							row.add(ride.getPrice());
-							row.add(ride); // ev object added in order to obtain it with tableModelEvents.getValueAt(i,3)
-							tableModelRides.addRow(row);		
+							row.add(ride);
+							tableModelRides.addRow(row);
 						}
 						datesWithRidesCurrentMonth=facade.getThisMonthDatesWithRides((String)jComboBoxOrigin.getSelectedItem(),(String)jComboBoxDestination.getSelectedItem(),jCalendar1.getDate());
 						paintDaysWithEvents(jCalendar1,datesWithRidesCurrentMonth,Color.CYAN);
@@ -245,25 +244,26 @@ public class BookRideGUI extends JFrame {
 					}
 					tableRides.getColumnModel().getColumn(0).setPreferredWidth(170);
 					tableRides.getColumnModel().getColumn(1).setPreferredWidth(30);
-					tableRides.getColumnModel().getColumn(1).setPreferredWidth(30);
+					tableRides.getColumnModel().getColumn(2).setPreferredWidth(30);
 					tableRides.getColumnModel().removeColumn(tableRides.getColumnModel().getColumn(3)); // not shown in JTable
 
 				}
-			} 
-			
+			}
+
 		});
 
-		JButton JRegisterBack = new JButton(Messages.getString("RegisterGUI.Back"));
-		JRegisterBack.addActionListener(new ActionListener() {
+		JButton JBack = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Back"));
+		JBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				tableModelRides = null;
 				b = new MainGUIt(t);
 				b.setVisible(true);
 				dispose();
 			}
 		});
-		JRegisterBack.setBounds(335, 421, 130, 30);
-		this.getContentPane().add(JRegisterBack);
-		
+		JBack.setBounds(335, 421, 130, 30);
+		this.getContentPane().add(JBack);
+
 		this.getContentPane().add(jCalendar1, null);
 
 		scrollPaneEvents.setBounds(new Rectangle(172, 257, 346, 150));
@@ -278,7 +278,7 @@ public class BookRideGUI extends JFrame {
 
 		tableRides.getColumnModel().getColumn(0).setPreferredWidth(170);
 		tableRides.getColumnModel().getColumn(1).setPreferredWidth(30);
-		tableRides.getColumnModel().getColumn(1).setPreferredWidth(30);
+		tableRides.getColumnModel().getColumn(2).setPreferredWidth(30);
 
 		tableRides.getColumnModel().removeColumn(tableRides.getColumnModel().getColumn(3)); // not shown in JTable
 
@@ -289,9 +289,6 @@ public class BookRideGUI extends JFrame {
 	}
 	@SuppressWarnings("deprecation")
 	public static void paintDaysWithEvents(JCalendar jCalendar,List<Date> datesWithEventsCurrentMonth, Color color) {
-		//		// For each day with events in current month, the background color for that day is changed to cyan.
-
-
 		Calendar calendar = jCalendar.getCalendar();
 
 		int month = calendar.get(Calendar.MONTH);
@@ -319,7 +316,7 @@ public class BookRideGUI extends JFrame {
 			// the empty days before day 1 of month, and all the days previous to each day.
 			// That number of components is calculated with "offset" and is different in
 			// English and Spanish
-			//			    		  Component o=(Component) jCalendar.getDayChooser().getDayPanel().getComponent(i+offset);; 
+			//			    		  Component o=(Component) jCalendar.getDayChooser().getDayPanel().getComponent(i+offset);;
 			Component o = (Component) jCalendar.getDayChooser().getDayPanel()
 					.getComponent(calendar.get(Calendar.DAY_OF_MONTH) + offset);
 			o.setBackground(color);
@@ -328,12 +325,5 @@ public class BookRideGUI extends JFrame {
 		calendar.set(Calendar.DAY_OF_MONTH, today);
 		calendar.set(Calendar.MONTH, month);
 		calendar.set(Calendar.YEAR, year);
-
-
 	}
-	
-	private void jButton2_actionPerformed(ActionEvent e) {
-		this.setVisible(false);
-	}
-
 }

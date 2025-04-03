@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.EventQueue;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.JButton;
@@ -11,6 +10,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import domain.*;
+import businessLogic.*;
+
 
 public class LoginGUI extends JFrame {
 
@@ -25,22 +26,11 @@ public class LoginGUI extends JFrame {
 	private SelectGUI b;
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_2;
-
+	BLFacade facade = ApplicationLauncher.getBusinessLogic();
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginGUI frame = new LoginGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+
 
 	/**
 	 * Create the frame.
@@ -60,19 +50,16 @@ public class LoginGUI extends JFrame {
 		jRegisterB = new JButton(ResourceBundle.getBundle("Etiquetas").getString("LoginGUI.Login"));
 		jRegisterB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// SORTU BEHAR DA DATU BASEAN ERABILTZAILEA BILATZEKO ETA GERO INFORMAZIOA SAIOA
-				// HASTEKO
+				
 				try {
 					String s1 = new String(passwordField.getPassword());
-					System.out.println("Usuario: " + UserL.getText() + " contraseña: " + s1);
-					if (ApplicationLauncher.da.getPass(UserL.getText(), s1)) {
-						User d = ApplicationLauncher.da.getUserByEmail(UserL.getText());
-						String s = new String(ApplicationLauncher.da.getUserTypeByEmail(UserL.getText()));
-						if (s.equals("Traveler")) {
+					if (facade.getPass(UserL.getText(), s1)) {
+						User d = facade.getUserByEmail(UserL.getText());
+						if (d instanceof Traveler) {
 							MainGUIt a = new MainGUIt((Traveler) d);
 							a.setVisible(true);
 							dispose();
-						} else if (s.equals("Driver")) {
+						} else {
 							MainGUI b = new MainGUI((Driver) d);
 							b.setVisible(true);
 							dispose();
@@ -98,7 +85,7 @@ public class LoginGUI extends JFrame {
 		passwordField.setBounds(149, 95, 240, 20);
 		contentPane.add(passwordField);
 
-		JButton JRegisterBack = new JButton(Messages.getString("RegisterGUI.Back"));
+		JButton JRegisterBack = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Back"));
 		JRegisterBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				b = new SelectGUI();

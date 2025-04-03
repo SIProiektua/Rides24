@@ -15,7 +15,8 @@ public class ApplicationLauncher {
 	public static DataAccess da;
     private static BLFacade appFacadeInterface;
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("dep"
+			+ "recation")
 	public static void main(String[] args) {
 		ConfigXML c=ConfigXML.getInstance();
 
@@ -53,18 +54,10 @@ public class ApplicationLauncher {
 		         appFacadeInterface = service.getPort(BLFacade.class);
 			}
 
-			//MainGUI.setBussinessLogic(appFacadeInterface);
-
-
 		}catch (Exception e) {
-			//!\Para solucionar en otro momento!
-			//a.jLabelSelectOption.setText("Error: "+e.toString());
-			//a.jLabelSelectOption.setForeground(Color.RED);
-
 			System.out.println("Error in ApplicationLauncher: "+e.toString());
 		}
-		//a.pack();
-		
+	
 
 	}
 	public static BLFacade getBusinessLogic(){

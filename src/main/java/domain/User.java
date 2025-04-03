@@ -194,4 +194,8 @@ public class User implements Serializable {
 	public void addMugimenduak(Mugimendua mugimendua){
 		mugimenduak.add(mugimendua);
 	}
+
+	public void removeMugimendua(Mugimendua m){
+		mugimenduak.remove(m);
+	}
 }

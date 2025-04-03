@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @Entity
 public class Driver extends User{
 	private static final long serialVersionUID = 1L;
-	private String na;
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
 	private ArrayList<Ride> rides;
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.PERSIST)
@@ -31,7 +30,7 @@ public class Driver extends User{
 		
     }
 	public String toString(){
-		return getEmail()+";"+name+ " " + cars;
+		return getEmail()+";"+name+ " " + cars + rides;
 	}
 	
 
@@ -88,7 +87,7 @@ public class Driver extends User{
 	}
 	public int compareTo(Driver drive) {
 		int i = 0;
-		if(drive.getNa().equals(this.getNa())&&drive.getEmail().equals(this.getEmail())&&(drive.getPassword().equals(this.getPassword()))&&drive.getUsername().equals(this.getUsername())&&this.getClass().getSimpleName().equals(drive.getClass().getSimpleName())) {
+		if(drive.getEmail().equals(this.getEmail())&&(drive.getPassword().equals(this.getPassword()))&&drive.getUsername().equals(this.getUsername())&&this.getClass().getSimpleName().equals(drive.getClass().getSimpleName())) {
 			i = 1;
 		}
 		return i;
@@ -101,12 +100,6 @@ public class Driver extends User{
 	}
 	public void addCar(Car car) {
 		cars.add(car);
-	}
-	public String getNa() {
-		return na;
-	}
-	public void setNa(String na) {
-		this.na = na;
 	}
 	public String getID() {
 		return ID;
@@ -131,5 +124,22 @@ public class Driver extends User{
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	@SuppressWarnings("deprecation")
+	public Ride findRide(String from, String to, Date date){
+		for(Ride ri: rides){
+			if(ri.getFrom().equals(from)&&ri.getTo().equals(to)){
+				if((date.getHours()==ri.getDate().getHours())&&(date.getMinutes()==ri.getDate().getMinutes())){
+					return ri;
+				}
+			}
+		}
+		return new Ride();
+	}
+	public List<Ride> getRides(){
+		return rides;
+	}
+	public void removeRide(Ride r){
+		rides.remove(r);
 	}
 }

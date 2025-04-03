@@ -7,8 +7,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.awt.event.ActionEvent;
-import java.awt.event.*;
+//import java.awt.event.*;
 import domain.*;
 import businessLogic.*;
 
@@ -19,12 +21,16 @@ public class BookManageGUI extends JFrame {
 	private Book selectedBook;
 	private BLFacade facade = ApplicationLauncher.getBusinessLogic();
 	private MainGUIt b;
+	private Traveler traveler;
 
 	/**
 	 * Launch the application.
 	 */
 
-	public BookManageGUI(Traveler traveler) {
+	public BookManageGUI(Traveler t) {
+		traveler = (Traveler) facade.getUserByEmail(t.getEmail());
+
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 169);
 		contentPane = new JPanel();
@@ -33,40 +39,45 @@ public class BookManageGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		
+
 		DefaultComboBoxModel<Book> booksInfo = new DefaultComboBoxModel<Book>();
-		for (int i = 0; i < traveler.getBookList().size(); i++) {
-			booksInfo.addElement(traveler.getBookList().get(i));
+		for(Book book : traveler.getBookList()) {
+			booksInfo.addElement(book);
 		}
 		JComboBox<Book> bookComboBox = new JComboBox<Book>();
-		
+
 		bookComboBox.setModel(booksInfo);
 		bookComboBox.setBounds(34, 10, 372, 53);
 		contentPane.add(bookComboBox);
 
-		Book book = (Book) bookComboBox.getSelectedItem();
-		int id = book.getId();
-		
+		selectedBook = (Book) bookComboBox.getSelectedItem();
+		bookComboBox.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        selectedBook = (Book) bookComboBox.getSelectedItem();
+		    }
+		});
 
-		// Search in travelers' booklist the id we got.
-		for (int j = 0; j < traveler.getBookList().size(); j++) {
-			System.out.println("No entra al for");
-			if (traveler.getBookList().get(j).getId() == id) {
-				System.out.println("No entra al if");
-				selectedBook = traveler.getBookList().get(j);
-			}
-		}
 		JButton cancelBook = new JButton("Cancel Book");
 		cancelBook.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				facade.cancelBook(selectedBook.getId());
+				traveler = (Traveler) facade.getUserByEmail(t.getEmail());
 				booksInfo.removeAllElements();
+				if(booksInfo.getSize()>=1) {
+					for(Book book : traveler.getBookList()) {
+						booksInfo.addElement(book);
+					}
+				} else {
+					b = new MainGUIt(traveler);
+					b.setVisible(true);
+					dispose();
+				}
 			}
 		});
 		cancelBook.setBounds(34, 75, 180, 27);
 		contentPane.add(cancelBook);
 
-		JButton backButton = new JButton(Messages.getString("RegisterGUI.Back"));
+		JButton backButton = new JButton(ResourceBundle.getBundle("Etiquetas").getString("Back"));
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				b = new MainGUIt(traveler);

@@ -1,0 +1,68 @@
+------------------------------------------------------------------------------------------------------------------------
+
+[2025-04-01 20:46:40 #1 store] 
+Database '/home/aguachufrei/Workspaces/eclipse-workspace/Rides24/src/main/resources/rides.temp' is opened by 16555@archlinux
+
+[2025-04-01 20:46:41 #2 type.registry] 
+New type domain.User
+
+[2025-04-01 20:46:41 #3 type.registry] 
+New type domain.Driver
+
+[2025-04-01 20:46:41 #4 type] 
+Type domain.User is not enhanced.
+
+[2025-04-01 20:46:41 #5 type.registry] 
+New type domain.Ride
+
+[2025-04-01 20:46:41 #6 type.registry] 
+New type domain.Mugimendua
+
+[2025-04-01 20:46:41 #7 type.registry] 
+New type java.util.ArrayList<domain.Mugimendua>
+
+[2025-04-01 20:46:41 #8 type] 
+Type domain.Driver is not enhanced.
+
+[2025-04-01 20:46:41 #9 type.registry] 
+New type domain.Car
+
+[2025-04-01 20:46:41 #10 type.registry] 
+New type java.util.ArrayList<domain.Car>
+
+[2025-04-01 20:46:41 #11 type.registry] 
+New type java.util.ArrayList<domain.Ride>
+
+[2025-04-01 20:46:41 #12 type] 
+Type domain.Ride is not enhanced.
+
+[2025-04-01 20:46:41 #13 type.registry] 
+New type domain.Book
+
+[2025-04-01 20:46:41 #14 type.registry] 
+New type java.util.ArrayList<domain.Book>
+
+[2025-04-01 20:46:41 #15 type] 
+Type domain.Mugimendua is not enhanced.
+
+[2025-04-01 20:46:41 #16 type] 
+Type domain.Car is not enhanced.
+
+[2025-04-01 20:46:41 #17 type] 
+Type domain.Book is not enhanced.
+
+[2025-04-01 20:46:41 #18 type.registry] 
+New type domain.Traveler
+
+[2025-04-01 20:46:41 #19 type] 
+Type domain.Traveler is not enhanced.
+
+[2025-04-01 20:46:41 #20 type.registry] 
+New type java.util.Vector<java.lang.Object>
+
+[2025-04-01 20:46:41 #21 type.registry] 
+New type java.util.Vector<domain.Ride>
+
+[2025-04-01 20:46:41 #22 type.registry] 
+New type java.util.ArrayList<java.lang.Object>
+
